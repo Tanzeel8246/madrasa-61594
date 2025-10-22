@@ -89,11 +89,11 @@ export function StudentDialog({ open, onOpenChange, onSave, student }: StudentDi
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="max-h-[85vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{student ? "Edit Student / طالب علم میں ترمیم" : "Add New Student / نیا طالب علم شامل کریں"}</DialogTitle>
+          <DialogTitle className="text-lg sm:text-xl">{student ? "Edit Student / طالب علم میں ترمیم" : "Add New Student / نیا طالب علم شامل کریں"}</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
           <div>
             <Label htmlFor="name">Name / نام *</Label>
             <Input
@@ -175,11 +175,11 @@ export function StudentDialog({ open, onOpenChange, onSave, student }: StudentDi
               </SelectContent>
             </Select>
           </div>
-          <div className="flex gap-2 justify-end">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+          <div className="flex flex-col-reverse sm:flex-row gap-2 justify-end pt-2">
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="w-full sm:w-auto">
               Cancel / منسوخ
             </Button>
-            <Button type="submit">Save / محفوظ کریں</Button>
+            <Button type="submit" className="w-full sm:w-auto">Save / محفوظ کریں</Button>
           </div>
         </form>
       </DialogContent>

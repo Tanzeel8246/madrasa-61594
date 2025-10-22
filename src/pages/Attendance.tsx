@@ -76,23 +76,23 @@ export default function Attendance() {
   return (
     <>
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Attendance / حاضری</h1>
-            <p className="text-muted-foreground">Track and manage student attendance / طلباء کی حاضری کا نظم کریں</p>
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground">Attendance / حاضری</h1>
+            <p className="text-muted-foreground text-sm md:text-base">Track and manage student attendance / طلباء کی حاضری کا نظم کریں</p>
           </div>
           {isAdmin && (
-            <Button onClick={() => setDialogOpen(true)}>
+            <Button onClick={() => setDialogOpen(true)} className="w-full sm:w-auto">
               <CalendarIcon className="mr-2 h-4 w-4" />
               Mark Attendance
             </Button>
           )}
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-3">
-          <Card className="lg:col-span-2">
+        <div className="grid gap-6 lg:grid-cols-3 xl:grid-cols-[2fr_1fr]">
+          <Card className="order-2 lg:order-1">
             <CardHeader>
-              <CardTitle>Attendance Records</CardTitle>
+              <CardTitle className="text-lg md:text-xl">Attendance Records</CardTitle>
               <CardDescription>
                 {date?.toLocaleDateString("en-US", {
                   weekday: "long",
@@ -136,17 +136,17 @@ export default function Attendance() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="order-1 lg:order-2">
             <CardHeader>
-              <CardTitle>Select Date</CardTitle>
-              <CardDescription>View attendance for a specific date</CardDescription>
+              <CardTitle className="text-lg md:text-xl">Select Date</CardTitle>
+              <CardDescription className="text-sm">View attendance for a specific date</CardDescription>
             </CardHeader>
             <CardContent>
               <Calendar
                 mode="single"
                 selected={date}
                 onSelect={setDate}
-                className="rounded-md border"
+                className="rounded-md border mx-auto"
               />
               <div className="mt-4 space-y-2">
                 <div className="flex items-center justify-between text-sm">

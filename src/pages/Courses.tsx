@@ -58,12 +58,12 @@ export default function Courses() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Courses</h1>
-          <p className="text-muted-foreground">Browse and manage madrasa courses</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground">Courses</h1>
+          <p className="text-muted-foreground text-sm md:text-base">Browse and manage madrasa courses</p>
         </div>
-        <Button onClick={handleAddClick}>
+        <Button onClick={handleAddClick} className="w-full sm:w-auto">
           <BookOpen className="mr-2 h-4 w-4" />
           Add New Course
         </Button>
@@ -74,9 +74,9 @@ export default function Courses() {
           <p className="text-muted-foreground">Loading courses...</p>
         </div>
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
           {courses.map((course) => (
-            <Card key={course.id} className="hover:shadow-lg transition-shadow">
+            <Card key={course.id} className="hover:shadow-lg transition-shadow sm:hover:-translate-y-1">
               <CardHeader>
                 <div className="flex items-start justify-between gap-2">
                   <div className="space-y-1 flex-1">

@@ -81,21 +81,21 @@ export default function UserRoles() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">User Roles</h1>
-          <p className="text-muted-foreground">Manage user permissions and roles</p>
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">User Roles</h1>
+          <p className="text-muted-foreground text-sm md:text-base">Manage user permissions and roles</p>
         </div>
-        <Button onClick={() => setDialogOpen(true)}>
+        <Button onClick={() => setDialogOpen(true)} className="w-full sm:w-auto">
           <Plus className="mr-2 h-4 w-4" /> Assign Role
         </Button>
       </div>
 
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle>User Roles Management</CardTitle>
-            <div className="relative w-64">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <CardTitle className="text-lg md:text-xl">User Roles Management</CardTitle>
+            <div className="relative w-full sm:w-64">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search..."
@@ -121,39 +121,41 @@ export default function UserRoles() {
                   No active user roles found.
                 </div>
               ) : (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>User Name</TableHead>
-                      <TableHead>Role</TableHead>
-                      <TableHead>Created At</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredRoles.map((role) => (
-                      <TableRow key={role.id}>
-                        <TableCell className="font-medium">
-                          {role.profile?.full_name || 'Unknown User'}
-                        </TableCell>
-                        <TableCell>{getRoleBadge(role.role)}</TableCell>
-                        <TableCell>{new Date(role.created_at).toLocaleDateString()}</TableCell>
-                        <TableCell className="text-right">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => {
-                              setRoleToDelete({ id: role.id, type: "active" });
-                              setDeleteDialogOpen(true);
-                            }}
-                          >
-                            Remove
-                          </Button>
-                        </TableCell>
+                <div className="overflow-x-auto -mx-6 sm:mx-0">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="min-w-[150px]">User Name</TableHead>
+                        <TableHead className="min-w-[100px]">Role</TableHead>
+                        <TableHead className="min-w-[120px]">Created At</TableHead>
+                        <TableHead className="text-right min-w-[100px]">Actions</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredRoles.map((role) => (
+                        <TableRow key={role.id}>
+                          <TableCell className="font-medium">
+                            {role.profile?.full_name || 'Unknown User'}
+                          </TableCell>
+                          <TableCell>{getRoleBadge(role.role)}</TableCell>
+                          <TableCell className="text-sm">{new Date(role.created_at).toLocaleDateString()}</TableCell>
+                          <TableCell className="text-right">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                setRoleToDelete({ id: role.id, type: "active" });
+                                setDeleteDialogOpen(true);
+                              }}
+                            >
+                              Remove
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
               )}
             </TabsContent>
 
@@ -167,37 +169,39 @@ export default function UserRoles() {
                   <p className="text-sm mt-1">Assign roles to email addresses before users sign up.</p>
                 </div>
               ) : (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Email Address</TableHead>
-                      <TableHead>Role</TableHead>
-                      <TableHead>Created At</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredPendingRoles.map((role) => (
-                      <TableRow key={role.id}>
-                        <TableCell>{role.email}</TableCell>
-                        <TableCell>{getRoleBadge(role.role)}</TableCell>
-                        <TableCell>{new Date(role.created_at).toLocaleDateString()}</TableCell>
-                        <TableCell className="text-right">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => {
-                              setRoleToDelete({ id: role.id, type: "pending" });
-                              setDeleteDialogOpen(true);
-                            }}
-                          >
-                            Remove
-                          </Button>
-                        </TableCell>
+                <div className="overflow-x-auto -mx-6 sm:mx-0">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="min-w-[180px]">Email Address</TableHead>
+                        <TableHead className="min-w-[100px]">Role</TableHead>
+                        <TableHead className="min-w-[120px]">Created At</TableHead>
+                        <TableHead className="text-right min-w-[100px]">Actions</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredPendingRoles.map((role) => (
+                        <TableRow key={role.id}>
+                          <TableCell className="truncate max-w-[200px]">{role.email}</TableCell>
+                          <TableCell>{getRoleBadge(role.role)}</TableCell>
+                          <TableCell className="text-sm">{new Date(role.created_at).toLocaleDateString()}</TableCell>
+                          <TableCell className="text-right">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                setRoleToDelete({ id: role.id, type: "pending" });
+                                setDeleteDialogOpen(true);
+                              }}
+                            >
+                              Remove
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
               )}
             </TabsContent>
           </Tabs>

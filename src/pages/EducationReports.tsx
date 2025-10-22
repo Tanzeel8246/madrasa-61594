@@ -97,14 +97,14 @@ export default function EducationReports() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground">
             Learning Report / تعلیمی رپورٹ
           </h1>
-          <p className="text-muted-foreground mt-1">Track Qur'an learning progress</p>
+          <p className="text-muted-foreground mt-1 text-sm md:text-base">Track Qur'an learning progress</p>
         </div>
-        <Button className="gap-2" onClick={handleAddClick} disabled={!isAdmin}>
+        <Button className="gap-2 w-full sm:w-auto" onClick={handleAddClick} disabled={!isAdmin}>
           <Plus className="h-4 w-4" />
           Add Report / رپورٹ شامل کریں
         </Button>
@@ -140,10 +140,10 @@ export default function EducationReports() {
           <p className="text-muted-foreground">Loading reports...</p>
         </div>
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
           {filteredReports.length > 0 ? (
             filteredReports.map((report) => (
-              <Card key={report.id} className="shadow-elevated hover:shadow-elevated transition-all duration-300">
+              <Card key={report.id} className="shadow-elevated hover:shadow-elevated transition-all duration-300 sm:hover:-translate-y-1">
                 <CardHeader>
                   <CardTitle className="flex items-center justify-between">
                     <span className="text-lg">{getStudentName(report.student_id)}</span>

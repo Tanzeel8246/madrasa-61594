@@ -57,13 +57,13 @@ export default function Fees() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Fee Management</h1>
-          <p className="text-muted-foreground">Manage student fees and payments</p>
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Fee Management</h1>
+          <p className="text-muted-foreground text-sm md:text-base">Manage student fees and payments</p>
         </div>
         {canManageFees && (
-          <Button onClick={() => { setEditingFee(undefined); setDialogOpen(true); }}>
+          <Button onClick={() => { setEditingFee(undefined); setDialogOpen(true); }} className="w-full sm:w-auto">
             <Plus className="mr-2 h-4 w-4" /> Add Fee
           </Button>
         )}
@@ -71,9 +71,9 @@ export default function Fees() {
 
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle>All Fees</CardTitle>
-            <div className="relative w-64">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <CardTitle className="text-lg md:text-xl">All Fees</CardTitle>
+            <div className="relative w-full sm:w-64">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search fees..."
@@ -92,61 +92,63 @@ export default function Fees() {
               No fees found. Add your first fee to get started.
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Fee Type</TableHead>
-                  <TableHead>Academic Year</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead>Due Date</TableHead>
-                  <TableHead>Status</TableHead>
-                  {canManageFees && <TableHead className="text-right">Actions</TableHead>}
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredFees.map((fee) => (
-                  <TableRow key={fee.id}>
-                    <TableCell className="font-medium">{fee.fee_type}</TableCell>
-                    <TableCell>{fee.academic_year}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center">
-                        <DollarSign className="h-4 w-4 mr-1" />
-                        {fee.amount}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center">
-                        <Calendar className="h-4 w-4 mr-2" />
-                        {new Date(fee.due_date).toLocaleDateString()}
-                      </div>
-                    </TableCell>
-                    <TableCell>{getStatusBadge(fee.status)}</TableCell>
-                    {canManageFees && (
-                      <TableCell className="text-right">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleEdit(fee)}
-                          className="mr-2"
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => {
-                            setFeeToDelete(fee.id);
-                            setDeleteDialogOpen(true);
-                          }}
-                        >
-                          Delete
-                        </Button>
-                      </TableCell>
-                    )}
+            <div className="overflow-x-auto -mx-6 sm:mx-0">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="min-w-[120px]">Fee Type</TableHead>
+                    <TableHead className="min-w-[100px]">Academic Year</TableHead>
+                    <TableHead className="min-w-[100px]">Amount</TableHead>
+                    <TableHead className="min-w-[120px]">Due Date</TableHead>
+                    <TableHead className="min-w-[100px]">Status</TableHead>
+                    {canManageFees && <TableHead className="text-right min-w-[150px]">Actions</TableHead>}
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {filteredFees.map((fee) => (
+                    <TableRow key={fee.id}>
+                      <TableCell className="font-medium">{fee.fee_type}</TableCell>
+                      <TableCell>{fee.academic_year}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center">
+                          <DollarSign className="h-4 w-4 mr-1" />
+                          {fee.amount}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-sm">
+                        <div className="flex items-center">
+                          <Calendar className="h-4 w-4 mr-2" />
+                          {new Date(fee.due_date).toLocaleDateString()}
+                        </div>
+                      </TableCell>
+                      <TableCell>{getStatusBadge(fee.status)}</TableCell>
+                      {canManageFees && (
+                        <TableCell className="text-right">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleEdit(fee)}
+                            className="mr-2"
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              setFeeToDelete(fee.id);
+                              setDeleteDialogOpen(true);
+                            }}
+                          >
+                            Delete
+                          </Button>
+                        </TableCell>
+                      )}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           )}
         </CardContent>
       </Card>

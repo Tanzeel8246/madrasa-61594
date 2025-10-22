@@ -56,12 +56,12 @@ export default function Teachers() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Teachers</h1>
-          <p className="text-muted-foreground mt-1">Manage your madrasa instructors</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground">Teachers</h1>
+          <p className="text-muted-foreground mt-1 text-sm md:text-base">Manage your madrasa instructors</p>
         </div>
-        <Button className="gap-2" onClick={handleAddClick} disabled={!isAdmin}>
+        <Button className="gap-2 w-full sm:w-auto" onClick={handleAddClick} disabled={!isAdmin}>
           <Plus className="h-4 w-4" />
           Add Teacher
         </Button>
@@ -95,9 +95,9 @@ export default function Teachers() {
           <p className="text-muted-foreground">Loading teachers...</p>
         </div>
       ) : (
-        <div className="grid gap-6 lg:grid-cols-2">
+        <div className="grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-2">
           {filteredTeachers.map((teacher) => (
-          <Card key={teacher.id} className="shadow-elevated hover:shadow-elevated transition-all duration-300 hover:-translate-y-1">
+          <Card key={teacher.id} className="shadow-elevated hover:shadow-elevated transition-all duration-300 sm:hover:-translate-y-1">
             <CardContent className="p-6">
               <div className="space-y-4">
                 {/* Header */}
