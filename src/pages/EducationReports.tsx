@@ -74,14 +74,15 @@ export default function EducationReports() {
     return cls?.name || "Unknown Class";
   };
 
-  const handleExportPDF = () => {
+  const handleExportPDF = async () => {
     if (filteredReports.length === 0) {
       toast.error("No reports to export");
       return;
     }
 
     try {
-      exportEducationReportsToPDF({
+      toast.info("Generating PDF...");
+      await exportEducationReportsToPDF({
         reports: filteredReports,
         students,
         classes,
