@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/untypedClient";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
 
 export interface Fee {
   id: string;
@@ -10,6 +11,7 @@ export interface Fee {
   status: string;
   fee_type: string;
   academic_year: string;
+  payment_screenshot_url?: string;
   created_at: string;
   updated_at: string;
   created_by: string | null;
@@ -17,9 +19,10 @@ export interface Fee {
 
 export const useFees = () => {
   const queryClient = useQueryClient();
+  const { madrasaName } = useAuth();
 
   const { data: fees, isLoading } = useQuery({
-    queryKey: ["fees"],
+    queryKey: ["fees", madrasaName],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("fees")
@@ -29,6 +32,7 @@ export const useFees = () => {
       if (error) throw error;
       return data as Fee[];
     },
+    enabled: !!madrasaName,
   });
 
   const createFee = useMutation({

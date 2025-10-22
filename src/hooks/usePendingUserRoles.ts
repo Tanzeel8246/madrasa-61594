@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/untypedClient";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
 
 export interface PendingUserRole {
   id: string;
@@ -12,9 +13,10 @@ export interface PendingUserRole {
 
 export const usePendingUserRoles = () => {
   const queryClient = useQueryClient();
+  const { madrasaName } = useAuth();
 
   const { data: pendingRoles, isLoading } = useQuery({
-    queryKey: ["pending_user_roles"],
+    queryKey: ["pending_user_roles", madrasaName],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("pending_user_roles")
@@ -24,6 +26,7 @@ export const usePendingUserRoles = () => {
       if (error) throw error;
       return data as PendingUserRole[];
     },
+    enabled: !!madrasaName,
   });
 
   const createPendingRole = useMutation({

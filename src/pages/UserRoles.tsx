@@ -40,8 +40,8 @@ export default function UserRoles() {
   const { pendingRoles, isLoading: isPendingLoading, createPendingRole, deletePendingRole } = usePendingUserRoles();
 
   const filteredRoles = userRoles?.filter((role) =>
-    role.user_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    role.role.toLowerCase().includes(searchQuery.toLowerCase())
+    (role.profile?.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    role.role.toLowerCase().includes(searchQuery.toLowerCase()))
   ) || [];
 
   const filteredPendingRoles = pendingRoles?.filter((role) =>
@@ -124,7 +124,7 @@ export default function UserRoles() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>User ID</TableHead>
+                      <TableHead>User Name</TableHead>
                       <TableHead>Role</TableHead>
                       <TableHead>Created At</TableHead>
                       <TableHead className="text-right">Actions</TableHead>
@@ -133,7 +133,9 @@ export default function UserRoles() {
                   <TableBody>
                     {filteredRoles.map((role) => (
                       <TableRow key={role.id}>
-                        <TableCell className="font-mono text-sm">{role.user_id}</TableCell>
+                        <TableCell className="font-medium">
+                          {role.profile?.full_name || 'Unknown User'}
+                        </TableCell>
                         <TableCell>{getRoleBadge(role.role)}</TableCell>
                         <TableCell>{new Date(role.created_at).toLocaleDateString()}</TableCell>
                         <TableCell className="text-right">

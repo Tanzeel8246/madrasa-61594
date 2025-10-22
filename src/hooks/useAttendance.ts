@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/untypedClient";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
 
 export type Attendance = {
   id: string;
@@ -15,9 +16,10 @@ export type Attendance = {
 
 export const useAttendance = (selectedDate?: string) => {
   const queryClient = useQueryClient();
+  const { madrasaName } = useAuth();
 
   const { data: attendance = [], isLoading } = useQuery({
-    queryKey: ["attendance", selectedDate],
+    queryKey: ["attendance", selectedDate, madrasaName],
     queryFn: async () => {
       let query = supabase
         .from("attendance")
@@ -32,6 +34,7 @@ export const useAttendance = (selectedDate?: string) => {
       if (error) throw error;
       return data as Attendance[];
     },
+    enabled: !!madrasaName,
   });
 
   const markAttendance = useMutation({

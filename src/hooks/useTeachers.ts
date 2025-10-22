@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/untypedClient";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
 
 export type Teacher = {
   id: string;
@@ -18,9 +19,10 @@ export type Teacher = {
 
 export const useTeachers = () => {
   const queryClient = useQueryClient();
+  const { madrasaName } = useAuth();
 
   const { data: teachers = [], isLoading } = useQuery({
-    queryKey: ["teachers"],
+    queryKey: ["teachers", madrasaName],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("teachers")
@@ -29,6 +31,7 @@ export const useTeachers = () => {
       if (error) throw error;
       return data as Teacher[];
     },
+    enabled: !!madrasaName,
   });
 
   const addTeacher = useMutation({
