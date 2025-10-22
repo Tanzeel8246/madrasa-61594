@@ -14,6 +14,7 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
+  const [madrasaName, setMadrasaName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const { signIn, signUp, signInWithGoogle, user } = useAuth();
@@ -32,7 +33,7 @@ const Auth = () => {
     if (isLogin) {
       await signIn(email, password);
     } else {
-      await signUp(email, password, fullName);
+      await signUp(email, password, fullName, madrasaName);
     }
 
     setIsLoading(false);
@@ -183,6 +184,17 @@ const Auth = () => {
                     placeholder="John Doe"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="signup-madrasa">Madrasa Name</Label>
+                  <Input
+                    id="signup-madrasa"
+                    type="text"
+                    placeholder="Enter madrasa name"
+                    value={madrasaName}
+                    onChange={(e) => setMadrasaName(e.target.value)}
                     required
                   />
                 </div>

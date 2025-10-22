@@ -8,11 +8,12 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   isLoading: boolean;
-  signUp: (email: string, password: string, fullName: string) => Promise<{ error: Error | null }>;
+  signUp: (email: string, password: string, fullName: string, madrasaName: string) => Promise<{ error: Error | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signInWithGoogle: () => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
   isAdmin: boolean;
+  madrasaName: string | null;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -22,6 +23,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [madrasaName, setMadrasaName] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -73,12 +75,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       } else {
         setIsAdmin(false);
       }
+
+      // Fetch madrasa name from profile
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('madrasa_name')
+        .eq('id', userId)
+        .maybeSingle();
+      
+      if (profileData?.madrasa_name) {
+        setMadrasaName(profileData.madrasa_name);
+      }
     } catch (error) {
       setIsAdmin(false);
     }
   };
 
-  const signUp = async (email: string, password: string, fullName: string) => {
+  const signUp = async (email: string, password: string, fullName: string, madrasaName: string) => {
     try {
       const redirectUrl = `${window.location.origin}/`;
       
@@ -88,7 +101,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         options: {
           emailRedirectTo: redirectUrl,
           data: {
-            full_name: fullName
+            full_name: fullName,
+            madrasa_name: madrasaName
           }
         }
       });
@@ -157,7 +171,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, isLoading, signUp, signIn, signInWithGoogle, signOut, isAdmin }}>
+    <AuthContext.Provider value={{ user, session, isLoading, signUp, signIn, signInWithGoogle, signOut, isAdmin, madrasaName }}>
       {children}
     </AuthContext.Provider>
   );

@@ -15,7 +15,7 @@ import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 
 export default function Header() {
-  const { user, signOut, isAdmin } = useAuth();
+  const { user, signOut, isAdmin, madrasaName } = useAuth();
   const { t, i18n } = useTranslation();
   
   const getInitials = (email: string) => {
@@ -35,8 +35,15 @@ export default function Header() {
   return (
     <header className="fixed left-0 md:left-64 right-0 top-0 z-30 h-16 md:h-20 border-b border-border bg-card shadow-soft">
       <div className="flex h-full items-center justify-between px-4 md:px-6 lg:px-8">
+        {/* Madrasa Name - Hidden on mobile */}
+        {madrasaName && (
+          <div className="hidden md:block">
+            <h1 className="text-xl font-bold text-primary">{madrasaName}</h1>
+          </div>
+        )}
+        
         {/* Search - Hidden on mobile */}
-        <div className="hidden sm:flex flex-1 max-w-md">
+        <div className="hidden sm:flex flex-1 max-w-md ml-4">
           <div className="relative w-full">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
