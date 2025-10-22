@@ -8,8 +8,18 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const userRoleFormSchema = z.object({
-  user_id: z.string().min(1, "User ID is required"),
+  assignmentType: z.enum(["user_id", "email"]),
+  user_id: z.string().optional(),
+  email: z.string().email("Invalid email address").optional(),
   role: z.string().min(1, "Role is required"),
+}).refine((data) => {
+  if (data.assignmentType === "user_id") {
+    return data.user_id && data.user_id.length > 0;
+  }
+  return data.email && data.email.length > 0;
+}, {
+  message: "Either User ID or Email is required",
+  path: ["user_id"],
 });
 
 type UserRoleFormValues = z.infer<typeof userRoleFormSchema>;
@@ -24,10 +34,14 @@ export function UserRoleDialog({ open, onOpenChange, onSave }: UserRoleDialogPro
   const form = useForm<UserRoleFormValues>({
     resolver: zodResolver(userRoleFormSchema),
     defaultValues: {
+      assignmentType: "email",
       user_id: "",
+      email: "",
       role: "teacher",
     },
   });
+
+  const assignmentType = form.watch("assignmentType");
 
   const onSubmit = async (data: UserRoleFormValues) => {
     await onSave(data);
@@ -44,17 +58,55 @@ export function UserRoleDialog({ open, onOpenChange, onSave }: UserRoleDialogPro
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
-              name="user_id"
+              name="assignmentType"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>User ID</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter user ID" {...field} />
-                  </FormControl>
+                  <FormLabel>Assignment Type</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="email">Assign by Email (before signup)</SelectItem>
+                      <SelectItem value="user_id">Assign by User ID (existing user)</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
+            {assignmentType === "user_id" ? (
+              <FormField
+                control={form.control}
+                name="user_id"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>User ID</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter user ID" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ) : (
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email Address</FormLabel>
+                    <FormControl>
+                      <Input type="email" placeholder="Enter email address" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
 
             <FormField
               control={form.control}

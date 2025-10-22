@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, Plus, Shield } from "lucide-react";
+import { Search, Plus, Shield, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,8 +7,10 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserRoles, UserRole } from "@/hooks/useUserRoles";
+import { usePendingUserRoles } from "@/hooks/usePendingUserRoles";
 import { UserRoleDialog } from "@/components/UserRoles/UserRoleDialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const getRoleBadge = (role: string) => {
   switch (role) {
@@ -32,18 +34,28 @@ export default function UserRoles() {
   const [searchQuery, setSearchQuery] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [roleToDelete, setRoleToDelete] = useState<string | null>(null);
+  const [roleToDelete, setRoleToDelete] = useState<{ id: string; type: "active" | "pending" } | null>(null);
 
   const { userRoles, isLoading, createUserRole, deleteUserRole } = useUserRoles();
+  const { pendingRoles, isLoading: isPendingLoading, createPendingRole, deletePendingRole } = usePendingUserRoles();
 
   const filteredRoles = userRoles?.filter((role) =>
     role.user_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
     role.role.toLowerCase().includes(searchQuery.toLowerCase())
   ) || [];
 
+  const filteredPendingRoles = pendingRoles?.filter((role) =>
+    role.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    role.role.toLowerCase().includes(searchQuery.toLowerCase())
+  ) || [];
+
   const handleDelete = async () => {
     if (roleToDelete) {
-      await deleteUserRole.mutateAsync(roleToDelete);
+      if (roleToDelete.type === "active") {
+        await deleteUserRole.mutateAsync(roleToDelete.id);
+      } else {
+        await deletePendingRole.mutateAsync(roleToDelete.id);
+      }
       setDeleteDialogOpen(false);
       setRoleToDelete(null);
     }
@@ -82,11 +94,11 @@ export default function UserRoles() {
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>All User Roles</CardTitle>
+            <CardTitle>User Roles Management</CardTitle>
             <div className="relative w-64">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search users..."
+                placeholder="Search..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-8"
@@ -95,45 +107,98 @@ export default function UserRoles() {
           </div>
         </CardHeader>
         <CardContent>
-          {isLoading ? (
-            <div className="text-center py-8">Loading roles...</div>
-          ) : filteredRoles.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
-              No roles found. Assign your first role to get started.
-            </div>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>User ID</TableHead>
-                  <TableHead>Role</TableHead>
-                  <TableHead>Created At</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredRoles.map((role) => (
-                  <TableRow key={role.id}>
-                    <TableCell className="font-mono text-sm">{role.user_id}</TableCell>
-                    <TableCell>{getRoleBadge(role.role)}</TableCell>
-                    <TableCell>{new Date(role.created_at).toLocaleDateString()}</TableCell>
-                    <TableCell className="text-right">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => {
-                          setRoleToDelete(role.id);
-                          setDeleteDialogOpen(true);
-                        }}
-                      >
-                        Remove
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
+          <Tabs defaultValue="active">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="active">Active Users ({userRoles?.length || 0})</TabsTrigger>
+              <TabsTrigger value="pending">Pending Invites ({pendingRoles?.length || 0})</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="active">
+              {isLoading ? (
+                <div className="text-center py-8">Loading roles...</div>
+              ) : filteredRoles.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  No active user roles found.
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>User ID</TableHead>
+                      <TableHead>Role</TableHead>
+                      <TableHead>Created At</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredRoles.map((role) => (
+                      <TableRow key={role.id}>
+                        <TableCell className="font-mono text-sm">{role.user_id}</TableCell>
+                        <TableCell>{getRoleBadge(role.role)}</TableCell>
+                        <TableCell>{new Date(role.created_at).toLocaleDateString()}</TableCell>
+                        <TableCell className="text-right">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              setRoleToDelete({ id: role.id, type: "active" });
+                              setDeleteDialogOpen(true);
+                            }}
+                          >
+                            Remove
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </TabsContent>
+
+            <TabsContent value="pending">
+              {isPendingLoading ? (
+                <div className="text-center py-8">Loading pending invites...</div>
+              ) : filteredPendingRoles.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Mail className="h-12 w-12 mx-auto mb-2 text-muted-foreground" />
+                  <p>No pending role assignments found.</p>
+                  <p className="text-sm mt-1">Assign roles to email addresses before users sign up.</p>
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Email Address</TableHead>
+                      <TableHead>Role</TableHead>
+                      <TableHead>Created At</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredPendingRoles.map((role) => (
+                      <TableRow key={role.id}>
+                        <TableCell>{role.email}</TableCell>
+                        <TableCell>{getRoleBadge(role.role)}</TableCell>
+                        <TableCell>{new Date(role.created_at).toLocaleDateString()}</TableCell>
+                        <TableCell className="text-right">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              setRoleToDelete({ id: role.id, type: "pending" });
+                              setDeleteDialogOpen(true);
+                            }}
+                          >
+                            Remove
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </TabsContent>
+          </Tabs>
         </CardContent>
       </Card>
 
@@ -141,7 +206,11 @@ export default function UserRoles() {
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         onSave={async (data) => {
-          await createUserRole.mutateAsync({ user_id: data.user_id, role: data.role });
+          if (data.assignmentType === "email" && data.email) {
+            await createPendingRole.mutateAsync({ email: data.email, role: data.role });
+          } else if (data.assignmentType === "user_id" && data.user_id) {
+            await createUserRole.mutateAsync({ user_id: data.user_id, role: data.role });
+          }
           setDialogOpen(false);
         }}
       />
@@ -151,7 +220,9 @@ export default function UserRoles() {
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will remove the role from the user. They will lose associated permissions.
+              {roleToDelete?.type === "pending" 
+                ? "This will remove the pending role assignment. The email will not be assigned this role when they sign up."
+                : "This will remove the role from the user. They will lose associated permissions."}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
