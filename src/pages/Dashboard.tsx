@@ -2,33 +2,57 @@ import { Users, GraduationCap, BookOpen, ClipboardCheck } from "lucide-react";
 import StatsCard from "@/components/Dashboard/StatsCard";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
+import { useStudents } from "@/hooks/useStudents";
+import { useTeachers } from "@/hooks/useTeachers";
+import { useClasses } from "@/hooks/useClasses";
+import { useAttendance } from "@/hooks/useAttendance";
 
 export default function Dashboard() {
-  // Mock data
+  const { t } = useTranslation();
+  const { students } = useStudents();
+  const { teachers } = useTeachers();
+  const { classes } = useClasses();
+  const { attendance } = useAttendance();
+
+  // Calculate real statistics
+  const totalStudents = students?.length || 0;
+  const activeStudents = students?.filter(s => s.status === 'active').length || 0;
+  const totalTeachers = teachers?.length || 0;
+  const totalClasses = classes?.length || 0;
+  
+  // Calculate today's attendance
+  const today = new Date().toISOString().split('T')[0];
+  const todayAttendance = attendance?.filter(a => a.date === today) || [];
+  const presentToday = todayAttendance.filter(a => a.status === 'present').length;
+  const attendanceRate = todayAttendance.length > 0 
+    ? Math.round((presentToday / todayAttendance.length) * 100) 
+    : 0;
+
   const stats = [
     {
-      title: "Total Students",
-      value: "342",
+      title: t('totalStudents'),
+      value: totalStudents.toString(),
       icon: Users,
-      trend: { value: "+12 this month", isPositive: true },
+      trend: { value: `${activeStudents} ${t('activeStudents').toLowerCase()}`, isPositive: true },
     },
     {
-      title: "Total Teachers",
-      value: "28",
+      title: t('totalTeachers'),
+      value: totalTeachers.toString(),
       icon: GraduationCap,
-      trend: { value: "+2 this month", isPositive: true },
+      trend: { value: "", isPositive: true },
     },
     {
-      title: "Active Classes",
-      value: "16",
+      title: t('totalClasses'),
+      value: totalClasses.toString(),
       icon: BookOpen,
-      trend: { value: "4 starting soon", isPositive: true },
+      trend: { value: "", isPositive: true },
     },
     {
-      title: "Attendance Rate",
-      value: "94%",
+      title: t('todayAttendance'),
+      value: `${attendanceRate}%`,
       icon: ClipboardCheck,
-      trend: { value: "+2% from last week", isPositive: true },
+      trend: { value: `${presentToday}/${todayAttendance.length} ${t('present').toLowerCase()}`, isPositive: true },
     },
   ];
 
@@ -49,8 +73,8 @@ export default function Dashboard() {
     <div className="space-y-6 md:space-y-8">
       {/* Welcome Section */}
       <div>
-        <h1 className="text-2xl md:text-3xl font-bold text-foreground">Welcome back, Admin</h1>
-        <p className="text-muted-foreground mt-1 text-sm md:text-base">Here's what's happening in your madrasa today.</p>
+        <h1 className="text-2xl md:text-3xl font-bold text-foreground">{t('dashboard')}</h1>
+        <p className="text-muted-foreground mt-1 text-sm md:text-base">{t('overview')}</p>
       </div>
 
       {/* Stats Grid */}

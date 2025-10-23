@@ -19,8 +19,8 @@ export default function Sidebar() {
     { name: t('attendance'), href: "/attendance", icon: ClipboardCheck },
     { name: t('courses'), href: "/courses", icon: BookMarked },
     { name: t('learningReport'), href: "/education-reports", icon: FileText },
-    { name: "Fees", href: "/fees", icon: DollarSign },
-    ...(isAdmin ? [{ name: "User Roles", href: "/user-roles", icon: Shield }] : []),
+    { name: t('fees'), href: "/fees", icon: DollarSign },
+    ...(isAdmin ? [{ name: t('userRoles'), href: "/user-roles", icon: Shield }] : []),
   ];
 
   // Close sidebar on route change (mobile)
