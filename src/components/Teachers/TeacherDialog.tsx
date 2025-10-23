@@ -84,70 +84,96 @@ export function TeacherDialog({ open, onOpenChange, onSave, teacher }: TeacherDi
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{teacher ? "Edit Teacher / استاد میں ترمیم" : "Add New Teacher / نیا استاد شامل کریں"}</DialogTitle>
+          <DialogTitle className="text-lg">{teacher ? "Edit Teacher / استاد میں ترمیم" : "Add New Teacher / نیا استاد شامل کریں"}</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Label htmlFor="name">Name / نام *</Label>
-            <Input
-              id="name"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              required
-            />
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Basic Information Section */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-foreground border-b pb-2">Basic Information / بنیادی معلومات</h3>
+            <div>
+              <Label htmlFor="name" className="text-sm">Name / نام *</Label>
+              <Input
+                id="name"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                required
+                className="mt-1.5"
+              />
+            </div>
+            <div>
+              <Label htmlFor="qualification" className="text-sm">Qualification / قابلیت *</Label>
+              <Input
+                id="qualification"
+                value={formData.qualification}
+                onChange={(e) => setFormData({ ...formData, qualification: e.target.value })}
+                required
+                className="mt-1.5"
+                placeholder="e.g., Masters in Islamic Studies"
+              />
+            </div>
+            <div>
+              <Label htmlFor="subject" className="text-sm">Subject / مضمون *</Label>
+              <Input
+                id="subject"
+                value={formData.subject}
+                onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                required
+                className="mt-1.5"
+                placeholder="e.g., Quran, Arabic, Fiqh"
+              />
+            </div>
           </div>
-          <div>
-            <Label htmlFor="qualification">Qualification / قابلیت *</Label>
-            <Input
-              id="qualification"
-              value={formData.qualification}
-              onChange={(e) => setFormData({ ...formData, qualification: e.target.value })}
-              required
-            />
+
+          {/* Contact Information Section */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-foreground border-b pb-2">Contact Information / رابطہ کی معلومات</h3>
+            <div>
+              <Label htmlFor="contact" className="text-sm">Contact / رابطہ *</Label>
+              <Input
+                id="contact"
+                value={formData.contact}
+                onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
+                required
+                className="mt-1.5"
+                placeholder="+92 300 1234567"
+              />
+            </div>
+            <div>
+              <Label htmlFor="email" className="text-sm">Email / ای میل *</Label>
+              <Input
+                id="email"
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                required
+                className="mt-1.5"
+                placeholder="teacher@madrasa.com"
+              />
+            </div>
           </div>
-          <div>
-            <Label htmlFor="subject">Subject / مضمون *</Label>
-            <Input
-              id="subject"
-              value={formData.subject}
-              onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-              required
-            />
+
+          {/* Additional Information Section */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-foreground border-b pb-2">Additional Information / اضافی معلومات</h3>
+            <div>
+              <Label htmlFor="specialization" className="text-sm">Specialization / تخصص</Label>
+              <Input
+                id="specialization"
+                value={formData.specialization}
+                onChange={(e) => setFormData({ ...formData, specialization: e.target.value })}
+                className="mt-1.5"
+                placeholder="e.g., Tajweed expert, Hadith scholar"
+              />
+            </div>
           </div>
-          <div>
-            <Label htmlFor="contact">Contact / رابطہ *</Label>
-            <Input
-              id="contact"
-              value={formData.contact}
-              onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
-              required
-            />
-          </div>
-          <div>
-            <Label htmlFor="email">Email *</Label>
-            <Input
-              id="email"
-              type="email"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              required
-            />
-          </div>
-          <div>
-            <Label htmlFor="specialization">Specialization / تخصص</Label>
-            <Input
-              id="specialization"
-              value={formData.specialization}
-              onChange={(e) => setFormData({ ...formData, specialization: e.target.value })}
-            />
-          </div>
-          <div className="flex gap-2 justify-end">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+
+          <div className="flex flex-col-reverse sm:flex-row gap-2 justify-end pt-2 border-t">
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="w-full sm:w-auto">
               Cancel / منسوخ
             </Button>
-            <Button type="submit">Save / محفوظ کریں</Button>
+            <Button type="submit" className="w-full sm:w-auto">Save / محفوظ کریں</Button>
           </div>
         </form>
       </DialogContent>

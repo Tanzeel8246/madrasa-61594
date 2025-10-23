@@ -1,6 +1,5 @@
 import { Bell, Search, LogOut, User, Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   DropdownMenu,
@@ -12,11 +11,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useTranslation } from "react-i18next";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { SearchCommand } from "@/components/ui/search-command";
 
 export default function Header() {
   const { user, signOut, isAdmin, madrasaName } = useAuth();
   const { t, i18n } = useTranslation();
+  const [searchOpen, setSearchOpen] = useState(false);
   
   const getInitials = (email: string) => {
     return email.substring(0, 2).toUpperCase();
@@ -44,14 +45,18 @@ export default function Header() {
         
         {/* Search - Hidden on mobile */}
         <div className="hidden sm:flex flex-1 max-w-md ml-4">
-          <div className="relative w-full">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder={t('searchPlaceholder')}
-              className="pl-10 bg-muted/50 border-muted w-full"
-            />
-          </div>
+          <Button 
+            variant="outline" 
+            className="w-full justify-start text-muted-foreground hover:text-foreground"
+            onClick={() => setSearchOpen(true)}
+          >
+            <Search className="mr-2 h-4 w-4" />
+            <span className="hidden md:inline">{t('searchPlaceholder')}</span>
+            <span className="md:hidden">{t('search')}</span>
+            <kbd className="ml-auto pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+              <span className="text-xs">⌘</span>K
+            </kbd>
+          </Button>
         </div>
 
         {/* Mobile title */}
@@ -60,7 +65,7 @@ export default function Header() {
         {/* Actions */}
         <div className="flex items-center gap-1 sm:gap-2 md:gap-3">
           {/* Search icon for mobile */}
-          <Button variant="ghost" size="icon" className="sm:hidden">
+          <Button variant="ghost" size="icon" className="sm:hidden" onClick={() => setSearchOpen(true)}>
             <Search className="h-5 w-5" />
           </Button>
 
@@ -106,6 +111,7 @@ export default function Header() {
           </DropdownMenu>
         </div>
       </div>
+      <SearchCommand open={searchOpen} onOpenChange={setSearchOpen} />
     </header>
   );
 }

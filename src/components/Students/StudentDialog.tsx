@@ -89,93 +89,123 @@ export function StudentDialog({ open, onOpenChange, onSave, student }: StudentDi
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[85vh] overflow-y-auto">
+      <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-lg sm:text-xl">{student ? "Edit Student / طالب علم میں ترمیم" : "Add New Student / نیا طالب علم شامل کریں"}</DialogTitle>
+          <DialogTitle className="text-lg">{student ? "Edit Student / طالب علم میں ترمیم" : "Add New Student / نیا طالب علم شامل کریں"}</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
-          <div>
-            <Label htmlFor="name">Name / نام *</Label>
-            <Input
-              id="name"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              required
-            />
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Personal Information */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-foreground border-b pb-2">Personal Information / ذاتی معلومات</h3>
+            <div>
+              <Label htmlFor="name" className="text-sm">Name / نام *</Label>
+              <Input
+                id="name"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                required
+                className="mt-1.5"
+                placeholder="Student full name"
+              />
+            </div>
+            <div>
+              <Label htmlFor="father_name" className="text-sm">Father's Name / والد کا نام *</Label>
+              <Input
+                id="father_name"
+                value={formData.father_name}
+                onChange={(e) => setFormData({ ...formData, father_name: e.target.value })}
+                required
+                className="mt-1.5"
+                placeholder="Father's full name"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label htmlFor="age" className="text-sm">Age / عمر</Label>
+                <Input
+                  id="age"
+                  type="number"
+                  value={formData.age}
+                  onChange={(e) => setFormData({ ...formData, age: e.target.value })}
+                  className="mt-1.5"
+                  placeholder="e.g., 10"
+                  min="1"
+                  max="99"
+                />
+              </div>
+              <div>
+                <Label htmlFor="grade" className="text-sm">Grade / درجہ</Label>
+                <Input
+                  id="grade"
+                  value={formData.grade}
+                  onChange={(e) => setFormData({ ...formData, grade: e.target.value })}
+                  className="mt-1.5"
+                  placeholder="e.g., 5th"
+                />
+              </div>
+            </div>
           </div>
-          <div>
-            <Label htmlFor="father_name">Father's Name / والد کا نام *</Label>
-            <Input
-              id="father_name"
-              value={formData.father_name}
-              onChange={(e) => setFormData({ ...formData, father_name: e.target.value })}
-              required
-            />
+
+          {/* Academic Information */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-foreground border-b pb-2">Academic Information / تعلیمی معلومات</h3>
+            <div>
+              <Label htmlFor="class_id" className="text-sm">Class / کلاس</Label>
+              <Select value={formData.class_id || undefined} onValueChange={(value) => setFormData({ ...formData, class_id: value })}>
+                <SelectTrigger className="mt-1.5">
+                  <SelectValue placeholder="Select class / کلاس منتخب کریں" />
+                </SelectTrigger>
+                <SelectContent>
+                  {classes.map((cls) => (
+                    <SelectItem key={cls.id} value={cls.id}>
+                      {cls.name} {cls.section ? `- ${cls.section}` : ''}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="admission_date" className="text-sm">Admission Date / داخلے کی تاریخ *</Label>
+              <Input
+                id="admission_date"
+                type="date"
+                value={formData.admission_date}
+                onChange={(e) => setFormData({ ...formData, admission_date: e.target.value })}
+                required
+                className="mt-1.5"
+              />
+            </div>
+            <div>
+              <Label htmlFor="status" className="text-sm">Status / حیثیت</Label>
+              <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value })}>
+                <SelectTrigger className="mt-1.5">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="active">Active / فعال</SelectItem>
+                  <SelectItem value="inactive">Inactive / غیر فعال</SelectItem>
+                  <SelectItem value="graduated">Graduated / فارغ التحصیل</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-          <div>
-            <Label htmlFor="class_id">Class / کلاس</Label>
-            <Select value={formData.class_id || undefined} onValueChange={(value) => setFormData({ ...formData, class_id: value })}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select class" />
-              </SelectTrigger>
-              <SelectContent>
-                {classes.map((cls) => (
-                  <SelectItem key={cls.id} value={cls.id}>
-                    {cls.name} {cls.section ? `- ${cls.section}` : ''}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+
+          {/* Contact Information */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-foreground border-b pb-2">Contact Information / رابطہ کی معلومات</h3>
+            <div>
+              <Label htmlFor="contact" className="text-sm">Contact / رابطہ</Label>
+              <Input
+                id="contact"
+                value={formData.contact}
+                onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
+                className="mt-1.5"
+                placeholder="+92 300 1234567"
+              />
+            </div>
           </div>
-          <div>
-            <Label htmlFor="admission_date">Admission Date / داخلے کی تاریخ *</Label>
-            <Input
-              id="admission_date"
-              type="date"
-              value={formData.admission_date}
-              onChange={(e) => setFormData({ ...formData, admission_date: e.target.value })}
-              required
-            />
-          </div>
-          <div>
-            <Label htmlFor="contact">Contact / رابطہ</Label>
-            <Input
-              id="contact"
-              value={formData.contact}
-              onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
-            />
-          </div>
-          <div>
-            <Label htmlFor="age">Age / عمر</Label>
-            <Input
-              id="age"
-              type="number"
-              value={formData.age}
-              onChange={(e) => setFormData({ ...formData, age: e.target.value })}
-            />
-          </div>
-          <div>
-            <Label htmlFor="grade">Grade / درجہ</Label>
-            <Input
-              id="grade"
-              value={formData.grade}
-              onChange={(e) => setFormData({ ...formData, grade: e.target.value })}
-            />
-          </div>
-          <div>
-            <Label htmlFor="status">Status / حیثیت</Label>
-            <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value })}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="active">Active / فعال</SelectItem>
-                <SelectItem value="inactive">Inactive / غیر فعال</SelectItem>
-                <SelectItem value="graduated">Graduated / فارغ التحصیل</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="flex flex-col-reverse sm:flex-row gap-2 justify-end pt-2">
+
+          <div className="flex flex-col-reverse sm:flex-row gap-2 justify-end pt-2 border-t">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="w-full sm:w-auto">
               Cancel / منسوخ
             </Button>

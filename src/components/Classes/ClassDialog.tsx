@@ -85,79 +85,95 @@ export function ClassDialog({ open, onOpenChange, onSave, classData }: ClassDial
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{classData ? "Edit Class" : "Add New Class"}</DialogTitle>
+          <DialogTitle className="text-lg">{classData ? "Edit Class / کلاس میں ترمیم" : "Add New Class / نیا کلاس شامل کریں"}</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Label htmlFor="name">Class Name *</Label>
-            <Input
-              id="name"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              required
-            />
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Basic Information */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-foreground border-b pb-2">Basic Information / بنیادی معلومات</h3>
+            <div>
+              <Label htmlFor="name" className="text-sm">Class Name / کلاس کا نام *</Label>
+              <Input
+                id="name"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                required
+                className="mt-1.5"
+                placeholder="e.g., Quran Recitation - Level 1"
+              />
+            </div>
+            <div>
+              <Label htmlFor="teacher" className="text-sm">Teacher / استاد</Label>
+              <Select value={formData.teacher_id} onValueChange={(value) => setFormData({ ...formData, teacher_id: value })}>
+                <SelectTrigger className="mt-1.5">
+                  <SelectValue placeholder="Select a teacher / استاد منتخب کریں" />
+                </SelectTrigger>
+                <SelectContent>
+                  {teachers.map((teacher) => (
+                    <SelectItem key={teacher.id} value={teacher.id}>
+                      {teacher.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="level" className="text-sm">Level / سطح</Label>
+              <Select value={formData.level} onValueChange={(value) => setFormData({ ...formData, level: value })}>
+                <SelectTrigger className="mt-1.5">
+                  <SelectValue placeholder="Select level / سطح منتخب کریں" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Beginner">Beginner / ابتدائی</SelectItem>
+                  <SelectItem value="Intermediate">Intermediate / درمیانہ</SelectItem>
+                  <SelectItem value="Advanced">Advanced / جدید</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-          <div>
-            <Label htmlFor="teacher">Teacher</Label>
-            <Select value={formData.teacher_id} onValueChange={(value) => setFormData({ ...formData, teacher_id: value })}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select a teacher" />
-              </SelectTrigger>
-              <SelectContent>
-                {teachers.map((teacher) => (
-                  <SelectItem key={teacher.id} value={teacher.id}>
-                    {teacher.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+
+          {/* Schedule & Location */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-foreground border-b pb-2">Schedule & Location / شیڈول اور مقام</h3>
+            <div>
+              <Label htmlFor="schedule" className="text-sm">Schedule / شیڈول</Label>
+              <Input
+                id="schedule"
+                value={formData.schedule}
+                onChange={(e) => setFormData({ ...formData, schedule: e.target.value })}
+                className="mt-1.5"
+                placeholder="e.g., Mon, Wed, Fri - 9:00 AM"
+              />
+            </div>
+            <div>
+              <Label htmlFor="duration" className="text-sm">Duration / دورانیہ</Label>
+              <Input
+                id="duration"
+                value={formData.duration}
+                onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
+                className="mt-1.5"
+                placeholder="e.g., 1 hour / 1 گھنٹہ"
+              />
+            </div>
+            <div>
+              <Label htmlFor="room" className="text-sm">Room / کمرہ</Label>
+              <Input
+                id="room"
+                value={formData.room}
+                onChange={(e) => setFormData({ ...formData, room: e.target.value })}
+                className="mt-1.5"
+                placeholder="e.g., Room 101"
+              />
+            </div>
           </div>
-          <div>
-            <Label htmlFor="schedule">Schedule</Label>
-            <Input
-              id="schedule"
-              value={formData.schedule}
-              onChange={(e) => setFormData({ ...formData, schedule: e.target.value })}
-              placeholder="e.g., Mon, Wed, Fri - 9:00 AM"
-            />
-          </div>
-          <div>
-            <Label htmlFor="duration">Duration</Label>
-            <Input
-              id="duration"
-              value={formData.duration}
-              onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
-              placeholder="e.g., 1 hour"
-            />
-          </div>
-          <div>
-            <Label htmlFor="room">Room</Label>
-            <Input
-              id="room"
-              value={formData.room}
-              onChange={(e) => setFormData({ ...formData, room: e.target.value })}
-            />
-          </div>
-          <div>
-            <Label htmlFor="level">Level</Label>
-            <Select value={formData.level} onValueChange={(value) => setFormData({ ...formData, level: value })}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select level" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Beginner">Beginner</SelectItem>
-                <SelectItem value="Intermediate">Intermediate</SelectItem>
-                <SelectItem value="Advanced">Advanced</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="flex gap-2 justify-end">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
+
+          <div className="flex flex-col-reverse sm:flex-row gap-2 justify-end pt-2 border-t">
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="w-full sm:w-auto">
+              Cancel / منسوخ
             </Button>
-            <Button type="submit">Save</Button>
+            <Button type="submit" className="w-full sm:w-auto">Save / محفوظ کریں</Button>
           </div>
         </form>
       </DialogContent>
