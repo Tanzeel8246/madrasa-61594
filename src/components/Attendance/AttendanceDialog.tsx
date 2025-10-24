@@ -54,6 +54,17 @@ export function AttendanceDialog({
     }
   }, [attendance, open]);
 
+  const handleStudentChange = (studentId: string) => {
+    const student = students.find(s => s.id === studentId);
+    if (student) {
+      setFormData({
+        ...formData,
+        student_id: studentId,
+        class_id: student.class_id || "",
+      });
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -93,7 +104,7 @@ export function AttendanceDialog({
           </div>
           <div>
             <Label htmlFor="student_id">Student / طالب علم *</Label>
-            <Select value={formData.student_id} onValueChange={(value) => setFormData({ ...formData, student_id: value })}>
+            <Select value={formData.student_id} onValueChange={handleStudentChange}>
               <SelectTrigger>
                 <SelectValue placeholder="Select student" />
               </SelectTrigger>

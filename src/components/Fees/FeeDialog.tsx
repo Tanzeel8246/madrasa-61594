@@ -120,6 +120,14 @@ export function FeeDialog({ open, onOpenChange, fee, onSave }: FeeDialogProps) {
     }
   };
 
+  const handleStudentChange = (studentId: string) => {
+    const student = students?.find(s => s.id === studentId);
+    if (student) {
+      form.setValue('student_id', studentId);
+      // Could auto-populate other fields here if needed
+    }
+  };
+
   const onSubmit = async (data: FeeFormValues) => {
     await onSave({
       ...data,
@@ -141,8 +149,8 @@ export function FeeDialog({ open, onOpenChange, fee, onSave }: FeeDialogProps) {
               name="student_id"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Student</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <FormLabel>Student / طالب علم</FormLabel>
+                  <Select onValueChange={handleStudentChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select student" />
