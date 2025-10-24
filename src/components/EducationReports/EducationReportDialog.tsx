@@ -37,12 +37,17 @@ export function EducationReportDialog({
     class_id: "",
     date: new Date().toISOString().split('T')[0],
     sabak_para_no: "",
+    sabak_amount_type: "",
     sabak_amount: "",
     sabqi_recited: false,
+    sabqi_amount_type: "",
     sabqi_amount: "",
     sabqi_heard_by: "",
+    sabqi_heard_by_other: "",
     manzil_number: "",
+    manzil_para_numbers: [] as string[],
     manzil_heard_by: "",
+    manzil_heard_by_other: "",
     remarks: "",
   });
 
@@ -54,12 +59,17 @@ export function EducationReportDialog({
         class_id: report.class_id || "",
         date: report.date,
         sabak_para_no: report.sabak?.para_no?.toString() || "",
+        sabak_amount_type: "",
         sabak_amount: report.sabak?.amount || "",
         sabqi_recited: report.sabqi?.recited || false,
+        sabqi_amount_type: "",
         sabqi_amount: report.sabqi?.amount || "",
         sabqi_heard_by: report.sabqi?.heard_by || "",
+        sabqi_heard_by_other: "",
         manzil_number: report.manzil?.number || "",
+        manzil_para_numbers: [],
         manzil_heard_by: report.manzil?.heard_by || "",
+        manzil_heard_by_other: "",
         remarks: report.remarks || "",
       });
     } else {
@@ -69,12 +79,17 @@ export function EducationReportDialog({
         class_id: "",
         date: new Date().toISOString().split('T')[0],
         sabak_para_no: "",
+        sabak_amount_type: "",
         sabak_amount: "",
         sabqi_recited: false,
+        sabqi_amount_type: "",
         sabqi_amount: "",
         sabqi_heard_by: "",
+        sabqi_heard_by_other: "",
         manzil_number: "",
+        manzil_para_numbers: [],
         manzil_heard_by: "",
+        manzil_heard_by_other: "",
         remarks: "",
       });
     }
@@ -100,6 +115,36 @@ export function EducationReportDialog({
       return;
     }
 
+    // Validation for "Other" option
+    if (formData.sabqi_heard_by === "other" && !formData.sabqi_heard_by_other) {
+      toast.error("Please enter the name for Sabqi heard by");
+      return;
+    }
+    if (formData.manzil_heard_by === "other" && !formData.manzil_heard_by_other) {
+      toast.error("Please enter the name for Manzil heard by");
+      return;
+    }
+
+    const sabakAmount = formData.sabak_amount_type && formData.sabak_amount 
+      ? `${formData.sabak_amount} ${formData.sabak_amount_type}`
+      : formData.sabak_amount;
+
+    const sabqiAmount = formData.sabqi_amount_type && formData.sabqi_amount
+      ? `${formData.sabqi_amount} ${formData.sabqi_amount_type}`
+      : formData.sabqi_amount;
+
+    const sabqiHeardBy = formData.sabqi_heard_by === "other" 
+      ? formData.sabqi_heard_by_other 
+      : formData.sabqi_heard_by;
+
+    const manzilHeardBy = formData.manzil_heard_by === "other"
+      ? formData.manzil_heard_by_other
+      : formData.manzil_heard_by;
+
+    const manzilNumber = formData.manzil_para_numbers.length > 0
+      ? formData.manzil_para_numbers.join(", ")
+      : formData.manzil_number;
+
     onSave({
       student_id: formData.student_id,
       father_name: formData.father_name,
@@ -107,16 +152,16 @@ export function EducationReportDialog({
       date: formData.date,
       sabak: {
         para_no: formData.sabak_para_no ? parseInt(formData.sabak_para_no) : undefined,
-        amount: formData.sabak_amount || undefined,
+        amount: sabakAmount || undefined,
       },
       sabqi: {
         recited: formData.sabqi_recited,
-        amount: formData.sabqi_amount || undefined,
-        heard_by: formData.sabqi_heard_by || undefined,
+        amount: sabqiAmount || undefined,
+        heard_by: sabqiHeardBy || undefined,
       },
       manzil: {
-        number: formData.manzil_number || undefined,
-        heard_by: formData.manzil_heard_by || undefined,
+        number: manzilNumber || undefined,
+        heard_by: manzilHeardBy || undefined,
       },
       remarks: formData.remarks || undefined,
     });
@@ -191,25 +236,46 @@ export function EducationReportDialog({
           {/* Sabak Section */}
           <div className="space-y-4 p-4 border rounded-lg">
             <h3 className="font-semibold">Sabak / سبق</h3>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-4">
               <div>
-                <Label htmlFor="sabak_para_no">Para Number / پارہ نمبر (1-30)</Label>
-                <Input
-                  id="sabak_para_no"
-                  type="number"
-                  min="1"
-                  max="30"
-                  value={formData.sabak_para_no}
-                  onChange={(e) => setFormData({ ...formData, sabak_para_no: e.target.value })}
-                />
+                <Label htmlFor="sabak_para_no">Para Number / پارہ نمبر</Label>
+                <Select value={formData.sabak_para_no} onValueChange={(value) => setFormData({ ...formData, sabak_para_no: value })}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select para / پارہ منتخب کریں" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Array.from({ length: 30 }, (_, i) => i + 1).map((num) => (
+                      <SelectItem key={num} value={num.toString()}>
+                        Para {num} / پارہ {num}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-              <div>
-                <Label htmlFor="sabak_amount">Amount / مقدار</Label>
-                <Input
-                  id="sabak_amount"
-                  value={formData.sabak_amount}
-                  onChange={(e) => setFormData({ ...formData, sabak_amount: e.target.value })}
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="sabak_amount_type">Amount Type / مقدار کی قسم</Label>
+                  <Select value={formData.sabak_amount_type} onValueChange={(value) => setFormData({ ...formData, sabak_amount_type: value })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select type / قسم منتخب کریں" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="سطر">Lines / سطر</SelectItem>
+                      <SelectItem value="رکوع">Rukoo / رکوع</SelectItem>
+                      <SelectItem value="آیات">Verses / آیات</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="sabak_amount">Amount / مقدار</Label>
+                  <Input
+                    id="sabak_amount"
+                    value={formData.sabak_amount}
+                    onChange={(e) => setFormData({ ...formData, sabak_amount: e.target.value })}
+                    placeholder="Enter amount"
+                    disabled={!formData.sabak_amount_type}
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -225,20 +291,37 @@ export function EducationReportDialog({
               />
               <Label htmlFor="sabqi_recited">Recited / سنایا</Label>
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="sabqi_amount">Amount / مقدار</Label>
-                <Input
-                  id="sabqi_amount"
-                  value={formData.sabqi_amount}
-                  onChange={(e) => setFormData({ ...formData, sabqi_amount: e.target.value })}
-                />
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="sabqi_amount_type">Amount Type / مقدار کی قسم</Label>
+                  <Select value={formData.sabqi_amount_type} onValueChange={(value) => setFormData({ ...formData, sabqi_amount_type: value })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select type / قسم منتخب کریں" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="سطریں">Lines / سطریں</SelectItem>
+                      <SelectItem value="آیات">Verses / آیات</SelectItem>
+                      <SelectItem value="رکوع">Rukoo / رکوع</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="sabqi_amount">Amount / مقدار</Label>
+                  <Input
+                    id="sabqi_amount"
+                    value={formData.sabqi_amount}
+                    onChange={(e) => setFormData({ ...formData, sabqi_amount: e.target.value })}
+                    placeholder="Enter amount"
+                    disabled={!formData.sabqi_amount_type}
+                  />
+                </div>
               </div>
               <div>
-                <Label htmlFor="sabqi_heard_by">Heard By / سنا</Label>
-                <Select value={formData.sabqi_heard_by} onValueChange={(value) => setFormData({ ...formData, sabqi_heard_by: value })}>
+                <Label htmlFor="sabqi_heard_by">Heard By / سننے والا</Label>
+                <Select value={formData.sabqi_heard_by} onValueChange={(value) => setFormData({ ...formData, sabqi_heard_by: value, sabqi_heard_by_other: "" })}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select teacher" />
+                    <SelectValue placeholder="Select teacher / استاد منتخب کریں" />
                   </SelectTrigger>
                   <SelectContent>
                     {teachers.map((teacher) => (
@@ -246,29 +329,89 @@ export function EducationReportDialog({
                         {teacher.name}
                       </SelectItem>
                     ))}
+                    <SelectItem value="other">Other / دیگر</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
+              {formData.sabqi_heard_by === "other" && (
+                <div>
+                  <Label htmlFor="sabqi_heard_by_other">Name / نام *</Label>
+                  <Input
+                    id="sabqi_heard_by_other"
+                    value={formData.sabqi_heard_by_other}
+                    onChange={(e) => setFormData({ ...formData, sabqi_heard_by_other: e.target.value })}
+                    placeholder="Enter name"
+                    required
+                  />
+                </div>
+              )}
             </div>
           </div>
 
           {/* Manzil Section */}
           <div className="space-y-4 p-4 border rounded-lg">
             <h3 className="font-semibold">Manzil / منزل</h3>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-4">
               <div>
-                <Label htmlFor="manzil_number">Manzil Number / منزل نمبر</Label>
-                <Input
-                  id="manzil_number"
-                  value={formData.manzil_number}
-                  onChange={(e) => setFormData({ ...formData, manzil_number: e.target.value })}
-                />
-              </div>
-              <div>
-                <Label htmlFor="manzil_heard_by">Heard By / سنا</Label>
-                <Select value={formData.manzil_heard_by} onValueChange={(value) => setFormData({ ...formData, manzil_heard_by: value })}>
+                <Label htmlFor="manzil_number">Number of Paras / پاروں کی تعداد</Label>
+                <Select 
+                  value={formData.manzil_number} 
+                  onValueChange={(value) => setFormData({ ...formData, manzil_number: value, manzil_para_numbers: [] })}
+                >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select teacher" />
+                    <SelectValue placeholder="Select / منتخب کریں" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">1 Para / ایک پارہ</SelectItem>
+                    <SelectItem value="2">2 Paras / دو پارے</SelectItem>
+                    <SelectItem value="3">3 Paras / تین پارے</SelectItem>
+                    <SelectItem value="4">4 Paras / چار پارے</SelectItem>
+                    <SelectItem value="5">5 Paras / پانچ پارے</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              {formData.manzil_number && (
+                <div>
+                  <Label>Select Para Numbers / پارے منتخب کریں</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {Array.from({ length: 30 }, (_, i) => i + 1).map((num) => (
+                      <div key={num} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={`para-${num}`}
+                          checked={formData.manzil_para_numbers.includes(num.toString())}
+                          disabled={
+                            !formData.manzil_para_numbers.includes(num.toString()) &&
+                            formData.manzil_para_numbers.length >= parseInt(formData.manzil_number)
+                          }
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              setFormData({
+                                ...formData,
+                                manzil_para_numbers: [...formData.manzil_para_numbers, num.toString()],
+                              });
+                            } else {
+                              setFormData({
+                                ...formData,
+                                manzil_para_numbers: formData.manzil_para_numbers.filter(p => p !== num.toString()),
+                              });
+                            }
+                          }}
+                        />
+                        <Label htmlFor={`para-${num}`} className="font-normal cursor-pointer">
+                          Para {num} / پارہ {num}
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div>
+                <Label htmlFor="manzil_heard_by">Heard By / سننے والا</Label>
+                <Select value={formData.manzil_heard_by} onValueChange={(value) => setFormData({ ...formData, manzil_heard_by: value, manzil_heard_by_other: "" })}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select teacher / استاد منتخب کریں" />
                   </SelectTrigger>
                   <SelectContent>
                     {teachers.map((teacher) => (
@@ -276,9 +419,22 @@ export function EducationReportDialog({
                         {teacher.name}
                       </SelectItem>
                     ))}
+                    <SelectItem value="other">Other / دیگر</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
+              {formData.manzil_heard_by === "other" && (
+                <div>
+                  <Label htmlFor="manzil_heard_by_other">Name / نام *</Label>
+                  <Input
+                    id="manzil_heard_by_other"
+                    value={formData.manzil_heard_by_other}
+                    onChange={(e) => setFormData({ ...formData, manzil_heard_by_other: e.target.value })}
+                    placeholder="Enter name"
+                    required
+                  />
+                </div>
+              )}
             </div>
           </div>
 
