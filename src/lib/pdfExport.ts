@@ -1,148 +1,159 @@
 import jsPDF from "jspdf";
+import autoTable from 'jspdf-autotable';
 import { EducationReport } from "@/hooks/useEducationReports";
 import { Student } from "@/hooks/useStudents";
 import { Class } from "@/hooks/useClasses";
-import { loadUrduFont } from "./urduFont";
+import { Teacher } from "@/hooks/useTeachers";
 
 interface ExportData {
   reports: EducationReport[];
   students: Student[];
   classes: Class[];
+  teachers: Teacher[];
+  dateFilter?: string;
 }
 
-export const exportEducationReportsToPDF = async ({ reports, students, classes }: ExportData) => {
-  const doc = new jsPDF();
+export const exportEducationReportsToPDF = async ({ reports, students, classes, teachers, dateFilter }: ExportData) => {
+  const doc = new jsPDF('l', 'mm', 'a4'); // Landscape for better table layout
   
-  // Load Urdu font
-  await loadUrduFont(doc);
-  
-  // Set Urdu font for all text
-  try {
-    doc.setFont("NotoNastaliqUrdu");
-  } catch (error) {
-    console.warn("Urdu font not available, using default font");
-  }
   const pageWidth = doc.internal.pageSize.getWidth();
-  const pageHeight = doc.internal.pageSize.getHeight();
-  const margin = 15;
-  let yPosition = margin;
+  const margin = 10;
 
-  // Helper functions
   const getStudentName = (studentId: string) => {
     const student = students.find(s => s.id === studentId);
-    return student?.name || "Unknown Student";
+    return student?.name || "Unknown";
   };
 
   const getClassName = (classId?: string) => {
-    if (!classId) return "No Class";
+    if (!classId) return "N/A";
     const cls = classes.find(c => c.id === classId);
-    return cls?.name || "Unknown Class";
+    return cls?.name || "N/A";
   };
 
-  const checkPageBreak = (requiredSpace: number) => {
-    if (yPosition + requiredSpace > pageHeight - margin) {
-      doc.addPage();
-      yPosition = margin;
-      return true;
+  const getTeacherName = (teacherId?: string) => {
+    if (!teacherId) return "N/A";
+    const teacher = teachers.find(t => t.id === teacherId);
+    return teacher?.name || "N/A";
+  };
+
+  const getPeriodText = () => {
+    switch (dateFilter) {
+      case "week": return "Weekly Report / ہفتہ وار رپورٹ";
+      case "month": return "Monthly Report / ماہانہ رپورٹ";
+      case "quarter": return "Quarterly Report / سہ ماہی رپورٹ";
+      case "half": return "Semi-Annual Report / شش ماہی رپورٹ";
+      case "year": return "Annual Report / سالانہ رپورٹ";
+      default: return "Learning Report / تعلیمی رپورٹ";
     }
-    return false;
   };
 
   // Header
-  doc.setFontSize(20);
-  doc.text("Learning Report / تعلیمی رپورٹ", pageWidth / 2, yPosition, { align: "center" });
-  yPosition += 10;
+  doc.setFontSize(16);
+  doc.text(getPeriodText(), pageWidth / 2, 15, { align: "center" });
+  
+  doc.setFontSize(9);
+  doc.text(`Generated: ${new Date().toLocaleDateString('en-GB')}`, pageWidth / 2, 22, { align: "center" });
 
-  doc.setFontSize(10);
-  doc.text(`Generated on: ${new Date().toLocaleDateString()}`, pageWidth / 2, yPosition, { align: "center" });
-  yPosition += 15;
-
-  // Total Reports Summary
-  doc.setFontSize(12);
-  doc.text(`Total Reports: ${reports.length}`, margin, yPosition);
-  yPosition += 10;
-
-  // Sort reports by date (newest first)
-  const sortedReports = [...reports].sort((a, b) => 
-    new Date(b.date).getTime() - new Date(a.date).getTime()
-  );
-
-  // Generate report cards
-  sortedReports.forEach((report, index) => {
-    checkPageBreak(70);
-
-    // Report Card Border
-    const cardHeight = 65;
-    doc.setDrawColor(100, 100, 100);
-    doc.setLineWidth(0.5);
-    doc.rect(margin, yPosition, pageWidth - 2 * margin, cardHeight);
-
-    // Report Header
-    const cardTop = yPosition + 5;
-    doc.setFontSize(12);
-    doc.text(`${index + 1}. ${getStudentName(report.student_id)}`, margin + 5, cardTop);
-    
-    doc.setFontSize(9);
-    doc.text(`Date: ${new Date(report.date).toLocaleDateString()}`, pageWidth - margin - 5, cardTop, { align: "right" });
-
-    // Student Info
-    let cardY = cardTop + 6;
-    doc.setFontSize(9);
-    doc.text(`Father: ${report.father_name}`, margin + 5, cardY);
-    doc.text(`Class: ${getClassName(report.class_id)}`, pageWidth / 2, cardY);
-
-    // Divider line
-    cardY += 4;
-    doc.setDrawColor(200, 200, 200);
-    doc.line(margin + 5, cardY, pageWidth - margin - 5, cardY);
-    cardY += 5;
-
-    // Sabak Section
-    doc.text("Sabak / سبق:", margin + 5, cardY);
-    cardY += 4;
-    doc.setFontSize(8);
-    doc.text(`Para: ${report.sabak?.para_no || 'N/A'}`, margin + 8, cardY);
-    doc.text(`Amount: ${report.sabak?.amount || 'N/A'}`, margin + 45, cardY);
-
-    // Sabqi Section
-    cardY += 5;
-    doc.setFontSize(9);
-    doc.text("Sabqi / سبقی:", margin + 5, cardY);
-    cardY += 4;
-    doc.setFontSize(8);
-    doc.text(`Recited: ${report.sabqi?.recited ? 'Yes' : 'No'}`, margin + 8, cardY);
-    doc.text(`Amount: ${report.sabqi?.amount || 'N/A'}`, margin + 45, cardY);
-
-    // Manzil Section
-    cardY += 5;
-    doc.setFontSize(9);
-    doc.text("Manzil / منزل:", margin + 5, cardY);
-    cardY += 4;
-    doc.setFontSize(8);
-    doc.text(`Number: ${report.manzil?.number || 'N/A'}`, margin + 8, cardY);
-
-    // Remarks (if any)
-    if (report.remarks) {
-      cardY += 5;
-      doc.setFontSize(8);
-      const remarksText = `Remarks: ${report.remarks}`;
-      const splitRemarks = doc.splitTextToSize(remarksText, pageWidth - 2 * margin - 15);
-      doc.text(splitRemarks, margin + 5, cardY);
+  // Group reports by student
+  const reportsByStudent = reports.reduce((acc, report) => {
+    if (!acc[report.student_id]) {
+      acc[report.student_id] = [];
     }
+    acc[report.student_id].push(report);
+    return acc;
+  }, {} as Record<string, EducationReport[]>);
 
-    yPosition += cardHeight + 8;
+  let startY = 30;
+
+  // Generate student-wise tables
+  Object.entries(reportsByStudent).forEach(([studentId, studentReports], index) => {
+    const student = students.find(s => s.id === studentId);
+    const sortedReports = [...studentReports].sort((a, b) => 
+      new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
+
+    // Student Info Header
+    doc.setFontSize(11);
+    doc.setFont("helvetica", "bold");
+    doc.text(`Student: ${student?.name || 'Unknown'} | Father: ${sortedReports[0]?.father_name || 'N/A'} | Class: ${getClassName(sortedReports[0]?.class_id)}`, margin, startY);
+    
+    startY += 7;
+
+    // Table data
+    const tableData = sortedReports.map(report => {
+      const sabakText = report.sabak?.para_no 
+        ? `P${report.sabak.para_no} ${report.sabak.amount || ''}`.trim()
+        : 'N/A';
+      
+      const sabqiText = report.sabqi?.recited 
+        ? `${report.sabqi.amount || 'N/A'}`
+        : 'No';
+      
+      const manzilText = report.manzil?.number 
+        ? `${report.manzil.number} Para${parseInt(report.manzil.number) > 1 ? 's' : ''}`
+        : 'N/A';
+
+      const heardBy = report.sabqi?.heard_by || report.manzil?.heard_by || 'N/A';
+      
+      return [
+        new Date(report.date).toLocaleDateString('en-GB'),
+        sabakText,
+        sabqiText,
+        manzilText,
+        heardBy,
+        report.remarks || '-'
+      ];
+    });
+
+    // Draw table
+    autoTable(doc, {
+      startY: startY,
+      head: [['Date', 'Sabak', 'Sabqi', 'Manzil', 'Heard By', 'Remarks']],
+      body: tableData,
+      theme: 'grid',
+      headStyles: {
+        fillColor: [66, 66, 66],
+        textColor: 255,
+        fontSize: 9,
+        fontStyle: 'bold',
+        halign: 'center'
+      },
+      bodyStyles: {
+        fontSize: 8,
+        cellPadding: 2
+      },
+      columnStyles: {
+        0: { cellWidth: 25, halign: 'center' },
+        1: { cellWidth: 35 },
+        2: { cellWidth: 30 },
+        3: { cellWidth: 35 },
+        4: { cellWidth: 40 },
+        5: { cellWidth: 'auto' }
+      },
+      margin: { left: margin, right: margin },
+      didDrawPage: function(data) {
+        // Footer
+        doc.setFontSize(7);
+        doc.text(
+          `Imam Tools Suite - Page ${doc.getCurrentPageInfo().pageNumber}`,
+          pageWidth / 2,
+          doc.internal.pageSize.getHeight() - 5,
+          { align: "center" }
+        );
+      }
+    });
+
+    // @ts-ignore - autoTable adds finalY property
+    startY = doc.lastAutoTable.finalY + 10;
+
+    // Check if we need a new page
+    if (startY > doc.internal.pageSize.getHeight() - 40 && index < Object.keys(reportsByStudent).length - 1) {
+      doc.addPage();
+      startY = 20;
+    }
   });
 
-  // Footer on last page
-  doc.setFontSize(8);
-  doc.text(
-    `Report generated by Imam Tools Suite - ${new Date().toLocaleString()}`,
-    pageWidth / 2,
-    pageHeight - 10,
-    { align: "center" }
-  );
-
   // Save the PDF
-  const fileName = `Learning_Reports_${new Date().toISOString().split('T')[0]}.pdf`;
+  const fileName = `Learning_Reports_${dateFilter || 'All'}_${new Date().toISOString().split('T')[0]}.pdf`;
   doc.save(fileName);
 };

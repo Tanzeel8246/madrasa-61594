@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Plus, Search, FileText, Edit, Trash2, Download } from "lucide-react";
+import { Plus, Search, FileText, Edit, Trash2, Download, Printer, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useEducationReports, EducationReport } from "@/hooks/useEducationReports";
 import { useStudents } from "@/hooks/useStudents";
 import { useTeachers } from "@/hooks/useTeachers";
@@ -13,6 +14,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useAuth } from "@/contexts/AuthContext";
 import { exportEducationReportsToPDF } from "@/lib/pdfExport";
 import { toast } from "sonner";
+import { format, subDays, subMonths, startOfWeek, endOfWeek, startOfMonth, endOfMonth } from "date-fns";
 
 export default function EducationReports() {
   const { isAdmin } = useAuth();
@@ -21,15 +23,44 @@ export default function EducationReports() {
   const [editingReport, setEditingReport] = useState<EducationReport | undefined>();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [reportToDelete, setReportToDelete] = useState<string | null>(null);
+  const [dateFilter, setDateFilter] = useState<string>("all");
+  const [selectedStudent, setSelectedStudent] = useState<string>("all");
   
   const { reports, isLoading, addReport, updateReport, deleteReport } = useEducationReports();
   const { students } = useStudents();
   const { teachers } = useTeachers();
   const { classes } = useClasses();
 
+  const getDateRange = () => {
+    const today = new Date();
+    switch (dateFilter) {
+      case "week":
+        return { start: startOfWeek(today), end: endOfWeek(today) };
+      case "month":
+        return { start: startOfMonth(today), end: endOfMonth(today) };
+      case "quarter":
+        return { start: subMonths(today, 3), end: today };
+      case "half":
+        return { start: subMonths(today, 6), end: today };
+      case "year":
+        return { start: subMonths(today, 12), end: today };
+      default:
+        return null;
+    }
+  };
+
   const filteredReports = reports.filter((report) => {
     const student = students.find(s => s.id === report.student_id);
-    return student?.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = student?.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesStudent = selectedStudent === "all" || report.student_id === selectedStudent;
+    
+    const dateRange = getDateRange();
+    const matchesDate = !dateRange || (
+      new Date(report.date) >= dateRange.start && 
+      new Date(report.date) <= dateRange.end
+    );
+    
+    return matchesSearch && matchesStudent && matchesDate;
   });
 
   const handleAddClick = () => {
@@ -76,22 +107,32 @@ export default function EducationReports() {
 
   const handleExportPDF = async () => {
     if (filteredReports.length === 0) {
-      toast.error("No reports to export");
+      toast.error("No reports to export / ایکسپورٹ کرنے کے لیے کوئی رپورٹ نہیں");
       return;
     }
 
     try {
-      toast.info("Generating PDF...");
+      toast.info("Generating PDF... / پی ڈی ایف بنائی جا رہی ہے...");
       await exportEducationReportsToPDF({
         reports: filteredReports,
         students,
         classes,
+        teachers,
+        dateFilter,
       });
-      toast.success("PDF exported successfully!");
+      toast.success("PDF exported successfully! / پی ڈی ایف کامیابی سے ایکسپورٹ ہوگئی");
     } catch (error) {
       console.error("Error exporting PDF:", error);
-      toast.error("Failed to export PDF");
+      toast.error("Failed to export PDF / پی ڈی ایف ایکسپورٹ ناکام");
     }
+  };
+
+  const handlePrint = () => {
+    if (filteredReports.length === 0) {
+      toast.error("No reports to print / پرنٹ کرنے کے لیے کوئی رپورٹ نہیں");
+      return;
+    }
+    window.print();
   };
 
   return (
@@ -110,24 +151,57 @@ export default function EducationReports() {
         </Button>
       </div>
 
-      {/* Search */}
+      {/* Filters */}
       <Card className="shadow-soft">
         <CardContent className="p-6">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="relative flex-1 max-w-md">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="relative">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 type="search"
-                placeholder="Search by student name..."
+                placeholder="Search by student name... / نام سے تلاش کریں"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10 bg-muted/50"
               />
             </div>
+            
+            <Select value={selectedStudent} onValueChange={setSelectedStudent}>
+              <SelectTrigger className="bg-muted/50">
+                <SelectValue placeholder="Select Student / طالب علم منتخب کریں" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Students / تمام طلباء</SelectItem>
+                {students.map((student) => (
+                  <SelectItem key={student.id} value={student.id}>
+                    {student.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select value={dateFilter} onValueChange={setDateFilter}>
+              <SelectTrigger className="bg-muted/50">
+                <Calendar className="h-4 w-4 mr-2" />
+                <SelectValue placeholder="Time Period / مدت" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Time / تمام</SelectItem>
+                <SelectItem value="week">This Week / ہفتہ وار</SelectItem>
+                <SelectItem value="month">This Month / ماہانہ</SelectItem>
+                <SelectItem value="quarter">Last 3 Months / سہ ماہی</SelectItem>
+                <SelectItem value="half">Last 6 Months / شش ماہی</SelectItem>
+                <SelectItem value="year">This Year / سالانہ</SelectItem>
+              </SelectContent>
+            </Select>
+
             <div className="flex gap-2">
-              <Button variant="outline" onClick={handleExportPDF}>
+              <Button variant="outline" onClick={handleExportPDF} className="flex-1">
                 <Download className="h-4 w-4 mr-2" />
                 Export PDF
+              </Button>
+              <Button variant="outline" onClick={handlePrint}>
+                <Printer className="h-4 w-4" />
               </Button>
             </div>
           </div>
