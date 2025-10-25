@@ -8,7 +8,7 @@ import { useState, useEffect } from "react";
 export default function Sidebar() {
   const location = useLocation();
   const { t } = useTranslation();
-  const { isAdmin } = useAuth();
+  const { isAdmin, madrasaName, logoUrl } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
 
   const navigation = [
@@ -58,17 +58,23 @@ export default function Sidebar() {
         <div className="flex h-full flex-col overflow-y-auto">
           {/* Logo */}
           <div className="flex h-16 md:h-20 items-center gap-3 border-b border-sidebar-border px-4 md:px-6">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-sidebar-primary">
-              <BookOpen className="h-6 w-6 text-sidebar-primary-foreground" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-sidebar-primary overflow-hidden">
+              {logoUrl ? (
+                <img src={logoUrl} alt="Madrasa logo" className="h-full w-full object-cover" />
+              ) : (
+                <BookOpen className="h-6 w-6 text-sidebar-primary-foreground" />
+              )}
             </div>
-            <div className="flex-1">
-              <h1 className="text-base md:text-lg font-bold text-sidebar-foreground">{t('appTitle')}</h1>
+            <div className="flex-1 min-w-0">
+              <h1 className="text-base md:text-lg font-bold text-sidebar-foreground truncate">
+                {madrasaName || t('appTitle')}
+              </h1>
               <p className="text-xs text-sidebar-foreground/70">{t('appSubtitle')}</p>
             </div>
             {/* Mobile close button */}
             <button
               onClick={() => setIsOpen(false)}
-              className="md:hidden p-2 hover:bg-sidebar-accent/50 rounded-lg"
+              className="md:hidden p-2 hover:bg-sidebar-accent/50 rounded-lg flex-shrink-0"
             >
               <X className="h-5 w-5 text-sidebar-foreground" />
             </button>

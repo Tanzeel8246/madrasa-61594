@@ -136,12 +136,16 @@ export default function Header() {
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuLabel>{t('myAccount')}</DropdownMenuLabel>
               <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => navigate('/profile')}>
+                <User className="mr-2 h-4 w-4" />
+                <span>{t('myAccount')}</span>
+              </DropdownMenuItem>
               {isAdmin && (
                 <DropdownMenuItem disabled>
-                  <User className="mr-2 h-4 w-4" />
-                  <span>{t('admin')}</span>
+                  <span className="text-xs text-muted-foreground">{t('admin')}</span>
                 </DropdownMenuItem>
               )}
+              <DropdownMenuSeparator />
               <DropdownMenuItem onClick={signOut}>
                 <LogOut className="mr-2 h-4 w-4" />
                 <span>{t('signOut')}</span>

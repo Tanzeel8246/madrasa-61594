@@ -42,6 +42,23 @@ const resources = {
       loading: 'Loading...',
       noData: 'No data available',
       
+      // Profile
+      manageProfile: 'Manage your profile and preferences',
+      accountDetails: 'Account Details',
+      personalInformation: 'Personal information',
+      fullName: 'Full Name',
+      enterFullName: 'Enter your full name',
+      madrasaDetails: 'Madrasa Details',
+      madrasaInformation: 'Madrasa information and branding',
+      madrasaName: 'Madrasa Name',
+      enterMadrasaName: 'Enter madrasa name',
+      madrasaLogo: 'Madrasa Logo',
+      uploadLogo: 'Upload Logo',
+      changeLogo: 'Change Logo',
+      logoSizeLimit: 'Maximum size: 2MB (JPG, PNG)',
+      saveChanges: 'Save Changes',
+      profileUpdated: 'Profile updated successfully',
+      
       // Header
       searchPlaceholder: 'Search students, teachers, classes...',
       language: 'Language',
@@ -178,6 +195,23 @@ const resources = {
       close: 'بند کریں',
       loading: 'لوڈ ہو رہا ہے...',
       noData: 'کوئی ڈیٹا دستیاب نہیں',
+      
+      // Profile
+      manageProfile: 'اپنی پروفائل اور ترجیحات کا انتظام کریں',
+      accountDetails: 'اکاؤنٹ کی تفصیلات',
+      personalInformation: 'ذاتی معلومات',
+      fullName: 'مکمل نام',
+      enterFullName: 'اپنا مکمل نام درج کریں',
+      madrasaDetails: 'مدرسہ کی تفصیلات',
+      madrasaInformation: 'مدرسہ کی معلومات اور برانڈنگ',
+      madrasaName: 'مدرسہ کا نام',
+      enterMadrasaName: 'مدرسہ کا نام درج کریں',
+      madrasaLogo: 'مدرسہ کا لوگو',
+      uploadLogo: 'لوگو اپ لوڈ کریں',
+      changeLogo: 'لوگو تبدیل کریں',
+      logoSizeLimit: 'زیادہ سے زیادہ سائز: 2MB (JPG, PNG)',
+      saveChanges: 'تبدیلیاں محفوظ کریں',
+      profileUpdated: 'پروفائل کامیابی سے اپ ڈیٹ ہو گئی',
       
       // Header
       searchPlaceholder: 'طلباء، اساتذہ، کلاسز تلاش کریں...',
