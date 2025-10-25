@@ -27,6 +27,10 @@ const resources = {
       myAccount: 'My Account',
       signOut: 'Sign Out',
       admin: 'Admin',
+      notifications: 'Notifications',
+      noNewNotifications: 'No new notifications',
+      pendingJoinRequests: 'pending join requests',
+      viewAllRequests: 'View All Requests',
       adminUser: 'Admin User',
       teacher: 'Teacher',
       actions: 'Actions',
@@ -40,7 +44,6 @@ const resources = {
       
       // Header
       searchPlaceholder: 'Search students, teachers, classes...',
-      notifications: 'Notifications',
       language: 'Language',
       
       // Branding
@@ -150,6 +153,10 @@ const resources = {
       myAccount: 'میرا اکاؤنٹ',
       signOut: 'سائن آؤٹ',
       admin: 'ایڈمن',
+      notifications: 'اطلاعات',
+      noNewNotifications: 'کوئی نئی اطلاع نہیں',
+      pendingJoinRequests: 'زیر التوا درخواستیں',
+      viewAllRequests: 'تمام درخواستیں دیکھیں',
       adminUser: 'ایڈمن صارف',
       teacher: 'استاد',
       actions: 'اقدامات',
@@ -163,7 +170,6 @@ const resources = {
       
       // Header
       searchPlaceholder: 'طلباء، اساتذہ، کلاسز تلاش کریں...',
-      notifications: 'اطلاعات',
       language: 'زبان',
       
       // Branding
