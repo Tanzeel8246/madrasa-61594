@@ -106,7 +106,7 @@ const JoinRequestForm = () => {
                 </SelectItem>
               ))
             ) : (
-              <SelectItem value="" disabled>
+              <SelectItem value="no-madrasa" disabled>
                 کوئی مدرسہ دستیاب نہیں
               </SelectItem>
             )}
