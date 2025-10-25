@@ -3,6 +3,7 @@ import StatsCard from "@/components/Dashboard/StatsCard";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { useStudents } from "@/hooks/useStudents";
 import { useTeachers } from "@/hooks/useTeachers";
 import { useClasses } from "@/hooks/useClasses";
@@ -10,6 +11,7 @@ import { useAttendance } from "@/hooks/useAttendance";
 
 export default function Dashboard() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { students } = useStudents();
   const { teachers } = useTeachers();
   const { classes } = useClasses();
@@ -85,63 +87,71 @@ export default function Dashboard() {
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-4 md:gap-6 lg:grid-cols-2">
         {/* Upcoming Classes */}
         <Card className="shadow-elevated">
-          <CardHeader>
-            <CardTitle>Upcoming Classes</CardTitle>
-            <CardDescription>Today's schedule overview</CardDescription>
+          <CardHeader className="pb-3 md:pb-6">
+            <CardTitle className="text-lg md:text-xl">{t('upcomingClasses')}</CardTitle>
+            <CardDescription className="text-xs md:text-sm">{t('todaySchedule')}</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="space-y-3 md:space-y-4">
               {upcomingClasses.map((classItem) => (
                 <div
                   key={classItem.id}
-                  className="flex items-center justify-between rounded-lg border border-border p-4 transition-colors hover:bg-muted/50"
+                  className="flex flex-col sm:flex-row sm:items-center sm:justify-between rounded-lg border border-border p-3 md:p-4 transition-colors hover:bg-muted/50 gap-2"
                 >
                   <div className="space-y-1">
-                    <p className="font-semibold text-foreground">{classItem.name}</p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="font-semibold text-sm md:text-base text-foreground">{classItem.name}</p>
+                    <p className="text-xs md:text-sm text-muted-foreground">
                       {classItem.teacher} • {classItem.students} students
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-primary">{classItem.time}</span>
+                    <span className="text-xs md:text-sm font-medium text-primary">{classItem.time}</span>
                   </div>
                 </div>
               ))}
             </div>
-            <Button className="mt-4 w-full" variant="outline">
-              View All Classes
+            <Button 
+              className="mt-4 w-full text-sm md:text-base" 
+              variant="outline"
+              onClick={() => navigate('/classes')}
+            >
+              {t('viewAllClasses')}
             </Button>
           </CardContent>
         </Card>
 
         {/* Recent Activity */}
         <Card className="shadow-elevated">
-          <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
-            <CardDescription>Latest updates and actions</CardDescription>
+          <CardHeader className="pb-3 md:pb-6">
+            <CardTitle className="text-lg md:text-xl">{t('recentActivity')}</CardTitle>
+            <CardDescription className="text-xs md:text-sm">{t('latestUpdates')}</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="space-y-3 md:space-y-4">
               {recentActivities.map((activity) => (
                 <div
                   key={activity.id}
-                  className="flex items-start gap-3 rounded-lg border border-border p-4 transition-colors hover:bg-muted/50"
+                  className="flex items-start gap-3 rounded-lg border border-border p-3 md:p-4 transition-colors hover:bg-muted/50"
                 >
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
+                  <div className="flex h-7 w-7 md:h-8 md:w-8 items-center justify-center rounded-full bg-primary/10 flex-shrink-0">
                     <div className="h-2 w-2 rounded-full bg-primary" />
                   </div>
-                  <div className="flex-1 space-y-1">
-                    <p className="text-sm font-medium text-foreground">{activity.title}</p>
+                  <div className="flex-1 space-y-1 min-w-0">
+                    <p className="text-xs md:text-sm font-medium text-foreground break-words">{activity.title}</p>
                     <p className="text-xs text-muted-foreground">{activity.time}</p>
                   </div>
                 </div>
               ))}
             </div>
-            <Button className="mt-4 w-full" variant="outline">
-              View All Activity
+            <Button 
+              className="mt-4 w-full text-sm md:text-base" 
+              variant="outline"
+              onClick={() => navigate('/')}
+            >
+              {t('viewAllActivity')}
             </Button>
           </CardContent>
         </Card>
@@ -149,27 +159,43 @@ export default function Dashboard() {
 
       {/* Quick Actions */}
       <Card className="shadow-elevated">
-        <CardHeader>
-          <CardTitle>Quick Actions</CardTitle>
-          <CardDescription>Common tasks and shortcuts</CardDescription>
+        <CardHeader className="pb-3 md:pb-6">
+          <CardTitle className="text-lg md:text-xl">{t('quickActions')}</CardTitle>
+          <CardDescription className="text-xs md:text-sm">{t('commonTasks')}</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <Button className="h-auto flex-col gap-2 py-4" variant="outline">
-              <Users className="h-6 w-6" />
-              <span>Add Student</span>
+          <div className="grid gap-3 md:gap-4 grid-cols-2 lg:grid-cols-4">
+            <Button 
+              className="h-auto flex-col gap-2 py-3 md:py-4 text-xs md:text-sm" 
+              variant="outline"
+              onClick={() => navigate('/students')}
+            >
+              <Users className="h-5 w-5 md:h-6 md:w-6" />
+              <span>{t('addStudent')}</span>
             </Button>
-            <Button className="h-auto flex-col gap-2 py-4" variant="outline">
-              <GraduationCap className="h-6 w-6" />
-              <span>Add Teacher</span>
+            <Button 
+              className="h-auto flex-col gap-2 py-3 md:py-4 text-xs md:text-sm" 
+              variant="outline"
+              onClick={() => navigate('/teachers')}
+            >
+              <GraduationCap className="h-5 w-5 md:h-6 md:w-6" />
+              <span>{t('addTeacher')}</span>
             </Button>
-            <Button className="h-auto flex-col gap-2 py-4" variant="outline">
-              <BookOpen className="h-6 w-6" />
-              <span>Create Class</span>
+            <Button 
+              className="h-auto flex-col gap-2 py-3 md:py-4 text-xs md:text-sm" 
+              variant="outline"
+              onClick={() => navigate('/classes')}
+            >
+              <BookOpen className="h-5 w-5 md:h-6 md:w-6" />
+              <span>{t('createClass')}</span>
             </Button>
-            <Button className="h-auto flex-col gap-2 py-4" variant="outline">
-              <ClipboardCheck className="h-6 w-6" />
-              <span>Mark Attendance</span>
+            <Button 
+              className="h-auto flex-col gap-2 py-3 md:py-4 text-xs md:text-sm" 
+              variant="outline"
+              onClick={() => navigate('/attendance')}
+            >
+              <ClipboardCheck className="h-5 w-5 md:h-6 md:w-6" />
+              <span>{t('markAttendance')}</span>
             </Button>
           </div>
         </CardContent>
