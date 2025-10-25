@@ -30,10 +30,33 @@ export const usePendingUserRoles = () => {
   });
 
   const createPendingRole = useMutation({
-    mutationFn: async (newRole: { email: string; role: string }) => {
+    mutationFn: async (newRole: { email: string; role: string; full_name?: string; madrasa_name?: string }) => {
+      const { data: authData } = await supabase.auth.getUser();
+      
+      const insertData: any = {
+        email: newRole.email,
+        role: newRole.role,
+      };
+
+      // If madrasa_name is provided, use it (for join requests)
+      // Otherwise, get from current user's profile (for admin invites)
+      if (newRole.madrasa_name) {
+        insertData.madrasa_name = newRole.madrasa_name;
+      } else if (authData.user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('madrasa_name')
+          .eq('id', authData.user.id)
+          .single();
+        
+        if (profile?.madrasa_name) {
+          insertData.madrasa_name = profile.madrasa_name;
+        }
+      }
+
       const { data, error } = await supabase
         .from("pending_user_roles")
-        .insert([newRole])
+        .insert([insertData])
         .select()
         .single();
 
