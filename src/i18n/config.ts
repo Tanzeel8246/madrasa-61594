@@ -154,6 +154,16 @@ const resources = {
       error: 'Error',
       warning: 'Warning',
       confirmDelete: 'Are you sure you want to delete this?',
+      
+      // Offline/Online Status
+      online: 'Online',
+      offline: 'Offline',
+      pendingChanges: 'pending changes',
+      syncNow: 'Sync Now',
+      offlineSaved: 'Offline: Changes will sync later',
+      onlineSyncing: 'Online! Syncing data...',
+      syncComplete: 'All changes synced',
+      syncError: 'Sync error',
     }
   },
   ur: {
@@ -308,6 +318,16 @@ const resources = {
       error: 'خرابی',
       warning: 'انتباہ',
       confirmDelete: 'کیا آپ واقعی اسے حذف کرنا چاہتے ہیں؟',
+      
+      // Offline/Online Status
+      online: 'آن لائن',
+      offline: 'آف لائن',
+      pendingChanges: 'تبدیلیاں منتظر',
+      syncNow: 'ابھی Sync کریں',
+      offlineSaved: 'آف لائن: تبدیلیاں بعد میں sync ہوں گی',
+      onlineSyncing: 'آن لائن ہو گئے! ڈیٹا sync ہو رہا ہے...',
+      syncComplete: 'تمام تبدیلیاں sync ہو گئیں',
+      syncError: 'Sync میں مسئلہ',
     }
   }
 };
