@@ -30,7 +30,7 @@ export const usePendingUserRoles = () => {
   });
 
   const createPendingRole = useMutation({
-    mutationFn: async (newRole: { email: string; role: string; full_name?: string; madrasa_name?: string }) => {
+    mutationFn: async (newRole: { email: string; role: string; full_name?: string; madrasa_name?: string; mobile?: string }) => {
       const { data: authData } = await supabase.auth.getUser();
       
       const insertData: any = {
@@ -38,7 +38,12 @@ export const usePendingUserRoles = () => {
         role: newRole.role,
       };
 
-      // If madrasa_name is provided, use it (for join requests)
+      // Add mobile if provided
+      if (newRole.mobile) {
+        insertData.mobile = newRole.mobile;
+      }
+
+      // If madrasa_name is provided, use it (for join requests or admin invites)
       // Otherwise, get from current user's profile (for admin invites)
       if (newRole.madrasa_name) {
         insertData.madrasa_name = newRole.madrasa_name;

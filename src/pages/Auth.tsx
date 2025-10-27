@@ -9,8 +9,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { GraduationCap } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import JoinRequestForm from "@/components/Auth/JoinRequestForm";
+import { useTranslation } from "react-i18next";
 
 const Auth = () => {
+  const { t } = useTranslation();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -55,16 +57,16 @@ const Auth = () => {
               <GraduationCap className="h-8 w-8 text-primary-foreground" />
             </div>
           </div>
-          <CardTitle className="text-2xl font-bold">اسکول مینجمنٹ سسٹم</CardTitle>
+          <CardTitle className="text-2xl font-bold">{t('schoolManagementSystem')}</CardTitle>
           <CardDescription>
-            اپنے اکاؤنٹ میں داخل ہوں یا نیا اکاؤنٹ بنائیں
+            {t('loginOrSignup')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs value={isLogin ? "login" : "signup"} onValueChange={(v) => setIsLogin(v === "login")}>
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="login">لاگ ان</TabsTrigger>
-              <TabsTrigger value="signup">سائن اپ</TabsTrigger>
+              <TabsTrigger value="login">{t('login')}</TabsTrigger>
+              <TabsTrigger value="signup">{t('signup')}</TabsTrigger>
             </TabsList>
             
             <TabsContent value="login">
@@ -94,7 +96,7 @@ const Auth = () => {
                       fill="#EA4335"
                     />
                   </svg>
-                  {isGoogleLoading ? "جاری ہے..." : "گوگل کے ساتھ جاری رکھیں"}
+                  {isGoogleLoading ? t('loading') : t('continueWithGoogle')}
                 </Button>
                 
                 <div className="relative">
@@ -103,13 +105,13 @@ const Auth = () => {
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
                     <span className="bg-background px-2 text-muted-foreground">
-                      یا ای میل کے ساتھ
+                      {t('orWithEmail')}
                     </span>
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="login-email">ای میل</Label>
+                  <Label htmlFor="login-email">{t('email')}</Label>
                   <Input
                     id="login-email"
                     type="email"
@@ -121,11 +123,11 @@ const Auth = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="login-password">پاس ورڈ</Label>
+                  <Label htmlFor="login-password">{t('password')}</Label>
                   <Input
                     id="login-password"
                     type="password"
-                    placeholder="پاس ورڈ درج کریں"
+                    placeholder={t('enterPassword')}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
@@ -133,7 +135,7 @@ const Auth = () => {
                   />
                 </div>
                 <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? "جاری ہے..." : "لاگ ان کریں"}
+                  {isLoading ? t('loading') : t('loginButton')}
                 </Button>
               </form>
             </TabsContent>
@@ -141,36 +143,36 @@ const Auth = () => {
             <TabsContent value="signup">
               <Tabs defaultValue="new" className="w-full">
                 <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="new">نیا مدرسہ</TabsTrigger>
-                  <TabsTrigger value="join">موجودہ میں شامل</TabsTrigger>
+                  <TabsTrigger value="new">{t('newMadrasa')}</TabsTrigger>
+                  <TabsTrigger value="join">{t('joinExisting')}</TabsTrigger>
                 </TabsList>
                 
                 <TabsContent value="new">
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="signup-name">مکمل نام</Label>
+                      <Label htmlFor="signup-name">{t('fullName')}</Label>
                       <Input
                         id="signup-name"
                         type="text"
-                        placeholder="آپ کا نام"
+                        placeholder={t('enterFullName')}
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
                         required
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="signup-madrasa">مدرسہ کا نام</Label>
+                      <Label htmlFor="signup-madrasa">{t('madrasaName')}</Label>
                       <Input
                         id="signup-madrasa"
                         type="text"
-                        placeholder="مدرسہ کا نام درج کریں"
+                        placeholder={t('enterMadrasaName')}
                         value={madrasaName}
                         onChange={(e) => setMadrasaName(e.target.value)}
                         required
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="signup-email">ای میل</Label>
+                      <Label htmlFor="signup-email">{t('email')}</Label>
                       <Input
                         id="signup-email"
                         type="email"
@@ -182,11 +184,11 @@ const Auth = () => {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="signup-password">پاس ورڈ</Label>
+                      <Label htmlFor="signup-password">{t('password')}</Label>
                       <Input
                         id="signup-password"
                         type="password"
-                        placeholder="پاس ورڈ بنائیں"
+                        placeholder={t('createPassword')}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
@@ -195,10 +197,10 @@ const Auth = () => {
                       />
                     </div>
                     <Button type="submit" className="w-full" disabled={isLoading}>
-                      {isLoading ? "اکاؤنٹ بن رہا ہے..." : "نیا مدرسہ بنائیں (ایڈمن)"}
+                      {isLoading ? t('creatingAccount') : t('createNewMadrasa')}
                     </Button>
                     <p className="text-xs text-muted-foreground text-center">
-                      آپ اس مدرسہ کے ایڈمن بن جائیں گے
+                      {t('youWillBeAdmin')}
                     </p>
                   </form>
                 </TabsContent>
