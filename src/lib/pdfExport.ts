@@ -11,9 +11,10 @@ interface ExportData {
   classes: Class[];
   teachers: Teacher[];
   dateFilter?: string;
+  madrasaName?: string;
 }
 
-export const exportEducationReportsToPDF = async ({ reports, students, classes, teachers, dateFilter }: ExportData) => {
+export const exportEducationReportsToPDF = async ({ reports, students, classes, teachers, dateFilter, madrasaName }: ExportData) => {
   const doc = new jsPDF('l', 'mm', 'a4'); // Landscape for better table layout
   
   const pageWidth = doc.internal.pageSize.getWidth();
@@ -38,21 +39,26 @@ export const exportEducationReportsToPDF = async ({ reports, students, classes, 
 
   const getPeriodText = () => {
     switch (dateFilter) {
-      case "week": return "Weekly Report / ہفتہ وار رپورٹ";
-      case "month": return "Monthly Report / ماہانہ رپورٹ";
-      case "quarter": return "Quarterly Report / سہ ماہی رپورٹ";
-      case "half": return "Semi-Annual Report / شش ماہی رپورٹ";
-      case "year": return "Annual Report / سالانہ رپورٹ";
-      default: return "Learning Report / تعلیمی رپورٹ";
+      case "week": return "ہفتہ وار رپورٹ / Weekly Report";
+      case "month": return "ماہانہ رپورٹ / Monthly Report";
+      case "quarter": return "سہ ماہی رپورٹ / Quarterly Report";
+      case "half": return "شش ماہی رپورٹ / Semi-Annual Report";
+      case "year": return "سالانہ رپورٹ / Annual Report";
+      default: return "تعلیمی رپورٹ / Education Report";
     }
   };
 
-  // Header
-  doc.setFontSize(16);
-  doc.text(getPeriodText(), pageWidth / 2, 15, { align: "center" });
+  // Header - Madrasa Name
+  doc.setFontSize(18);
+  doc.setFont("helvetica", "bold");
+  doc.text(madrasaName || "Madrasa Name", pageWidth / 2, 15, { align: "center" });
+  
+  doc.setFontSize(14);
+  doc.text(getPeriodText(), pageWidth / 2, 23, { align: "center" });
   
   doc.setFontSize(9);
-  doc.text(`Generated: ${new Date().toLocaleDateString('en-GB')}`, pageWidth / 2, 22, { align: "center" });
+  doc.setFont("helvetica", "normal");
+  doc.text(`Generated: ${new Date().toLocaleDateString('en-GB')} - ${new Date().toLocaleTimeString('en-GB')}`, pageWidth / 2, 29, { align: "center" });
 
   // Group reports by student
   const reportsByStudent = reports.reduce((acc, report) => {
@@ -63,7 +69,7 @@ export const exportEducationReportsToPDF = async ({ reports, students, classes, 
     return acc;
   }, {} as Record<string, EducationReport[]>);
 
-  let startY = 30;
+  let startY = 35;
 
   // Generate student-wise tables
   Object.entries(reportsByStudent).forEach(([studentId, studentReports], index) => {
@@ -108,18 +114,18 @@ export const exportEducationReportsToPDF = async ({ reports, students, classes, 
     // Draw table
     autoTable(doc, {
       startY: startY,
-      head: [['Date', 'Sabak', 'Sabqi', 'Manzil', 'Heard By', 'Remarks']],
+      head: [['تاریخ', 'سبق', 'سبقی', 'منزل', 'سنا بذریعہ', 'ریمارکس']],
       body: tableData,
       theme: 'grid',
       headStyles: {
         fillColor: [66, 66, 66],
         textColor: 255,
-        fontSize: 9,
+        fontSize: 10,
         fontStyle: 'bold',
         halign: 'center'
       },
       bodyStyles: {
-        fontSize: 8,
+        fontSize: 9,
         cellPadding: 2
       },
       columnStyles: {
@@ -135,7 +141,7 @@ export const exportEducationReportsToPDF = async ({ reports, students, classes, 
         // Footer
         doc.setFontSize(7);
         doc.text(
-          `Imam Tools Suite - Page ${doc.getCurrentPageInfo().pageNumber}`,
+          `Imam Tools Suite - صفحہ ${doc.getCurrentPageInfo().pageNumber}`,
           pageWidth / 2,
           doc.internal.pageSize.getHeight() - 5,
           { align: "center" }

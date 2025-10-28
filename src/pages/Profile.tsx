@@ -6,8 +6,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import { Upload, Save } from 'lucide-react';
+import { Upload, Save, UserCog, Clock, CheckCircle, XCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useRoleChangeRequests } from '@/hooks/useRoleChangeRequests';
+import { RoleChangeRequestDialog } from '@/components/Profile/RoleChangeRequestDialog';
+import { Badge } from '@/components/ui/badge';
+import { useUserRoles } from '@/hooks/useUserRoles';
 
 export default function Profile() {
   const { t } = useTranslation();
@@ -18,10 +22,18 @@ export default function Profile() {
   const [newMadrasaName, setNewMadrasaName] = useState('');
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [roleDialogOpen, setRoleDialogOpen] = useState(false);
+  const [currentRole, setCurrentRole] = useState<string>('user');
+  const [adminName, setAdminName] = useState<string>('');
+  
+  const { myRequests, isLoadingMyRequests, createRequest } = useRoleChangeRequests();
+  const { userRoles } = useUserRoles();
 
   useEffect(() => {
     loadProfile();
-  }, [user]);
+    loadUserRole();
+    loadAdminInfo();
+  }, [user, userRoles]);
 
   const loadProfile = async () => {
     if (!user) return;
@@ -42,6 +54,43 @@ export default function Profile() {
       }
     } catch (error: any) {
       console.error('Error loading profile:', error);
+    }
+  };
+
+  const loadUserRole = () => {
+    if (!user || !userRoles) return;
+    const role = userRoles.find(r => r.user_id === user.id);
+    if (role) {
+      setCurrentRole(role.role);
+    }
+  };
+
+  const loadAdminInfo = async () => {
+    if (!user || !madrasaName) return;
+    
+    try {
+      // Find admin in the same madrasa
+      const { data: adminRoles, error } = await supabase
+        .from('user_roles')
+        .select(`
+          user_id,
+          profile:user_id (
+            full_name,
+            madrasa_name
+          )
+        `)
+        .eq('role', 'admin');
+
+      if (error) throw error;
+
+      if (adminRoles && adminRoles.length > 0) {
+        const admin = adminRoles.find(r => r.profile?.madrasa_name === madrasaName);
+        if (admin && admin.profile) {
+          setAdminName(admin.profile.full_name || 'Admin');
+        }
+      }
+    } catch (error) {
+      console.error('Error loading admin info:', error);
     }
   };
 
@@ -122,6 +171,24 @@ export default function Profile() {
     }
   };
 
+  const handleRoleChangeRequest = async (data: { requested_role: string; request_message?: string }) => {
+    await createRequest.mutateAsync(data);
+    setRoleDialogOpen(false);
+  };
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'pending':
+        return <Badge variant="outline" className="bg-yellow-500/10 text-yellow-700"><Clock className="h-3 w-3 mr-1" />{t('pending')}</Badge>;
+      case 'approved':
+        return <Badge variant="outline" className="bg-green-500/10 text-green-700"><CheckCircle className="h-3 w-3 mr-1" />{t('approved')}</Badge>;
+      case 'rejected':
+        return <Badge variant="outline" className="bg-red-500/10 text-red-700"><XCircle className="h-3 w-3 mr-1" />{t('rejected')}</Badge>;
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="space-y-6 max-w-4xl">
       <div>
@@ -161,14 +228,38 @@ export default function Profile() {
 
             <div className="space-y-2">
               <Label htmlFor="role">{t('role')}</Label>
-              <Input
-                id="role"
-                type="text"
-                value={isAdmin ? t('admin') : t('teacher')}
-                disabled
-                className="bg-muted"
-              />
+              <div className="flex gap-2 items-center">
+                <Input
+                  id="role"
+                  type="text"
+                  value={currentRole}
+                  disabled
+                  className="bg-muted flex-1"
+                />
+                {!isAdmin && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setRoleDialogOpen(true)}
+                  >
+                    <UserCog className="h-4 w-4 mr-1" />
+                    {t('requestChange')}
+                  </Button>
+                )}
+              </div>
             </div>
+
+            {adminName && (
+              <div className="space-y-2">
+                <Label>{t('adminName')}</Label>
+                <Input
+                  value={adminName}
+                  disabled
+                  className="bg-muted"
+                />
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -238,6 +329,38 @@ export default function Profile() {
         )}
       </div>
 
+      {/* Role Change Requests */}
+      {!isAdmin && myRequests && myRequests.length > 0 && (
+        <Card className="shadow-elevated">
+          <CardHeader>
+            <CardTitle className="text-lg md:text-xl">{t('roleChangeRequests')}</CardTitle>
+            <CardDescription className="text-xs md:text-sm">{t('trackRequests')}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {myRequests.map((request) => (
+                <div key={request.id} className="flex items-center justify-between border-b pb-3 last:border-0">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium">{request.requested_role}</span>
+                      {getStatusBadge(request.status)}
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      {new Date(request.created_at).toLocaleDateString()}
+                    </p>
+                    {request.admin_response && (
+                      <p className="text-xs text-muted-foreground mt-1">
+                        <strong>{t('adminResponse')}:</strong> {request.admin_response}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       <div className="flex justify-end gap-3">
         <Button
           onClick={handleSave}
@@ -254,6 +377,13 @@ export default function Profile() {
           )}
         </Button>
       </div>
+
+      <RoleChangeRequestDialog
+        open={roleDialogOpen}
+        onOpenChange={setRoleDialogOpen}
+        onSubmit={handleRoleChangeRequest}
+        currentRole={currentRole}
+      />
     </div>
   );
 }

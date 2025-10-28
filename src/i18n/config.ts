@@ -180,6 +180,21 @@ const resources = {
       warning: 'Warning',
       confirmDelete: 'Are you sure you want to delete this?',
       
+      // Role change
+      requestRoleChange: 'Request Role Change',
+      currentRole: 'Current Role',
+      requestedRole: 'Requested Role',
+      requestMessage: 'Request Message',
+      explainReason: 'Explain why you need this role change',
+      submitRequest: 'Submit Request',
+      roleChangeRequests: 'Role Change Requests',
+      trackRequests: 'Track your role change requests',
+      adminResponse: 'Admin Response',
+      requestChange: 'Request Change',
+      adminName: 'Admin Name',
+      manager: 'Manager',
+      parent: 'Parent',
+      
       // Offline/Online Status
       online: 'Online',
       offline: 'Offline',
@@ -368,6 +383,21 @@ const resources = {
       error: 'خرابی',
       warning: 'انتباہ',
       confirmDelete: 'کیا آپ واقعی اسے حذف کرنا چاہتے ہیں؟',
+      
+      // Role change
+      requestRoleChange: 'رول تبدیلی کی درخواست',
+      currentRole: 'موجودہ رول',
+      requestedRole: 'مطلوبہ رول',
+      requestMessage: 'درخواست کا پیغام',
+      explainReason: 'رول تبدیلی کی وجہ بیان کریں',
+      submitRequest: 'درخواست جمع کرائیں',
+      roleChangeRequests: 'رول تبدیلی کی درخواستیں',
+      trackRequests: 'اپنی درخواستوں کو ٹریک کریں',
+      adminResponse: 'ایڈمن کا جواب',
+      requestChange: 'تبدیلی کی درخواست',
+      adminName: 'ایڈمن کا نام',
+      manager: 'منیجر',
+      parent: 'والدین',
       
       // Offline/Online Status
       online: 'آن لائن',

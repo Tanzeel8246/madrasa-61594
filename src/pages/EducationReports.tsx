@@ -17,7 +17,7 @@ import { toast } from "sonner";
 import { format, subDays, subMonths, startOfWeek, endOfWeek, startOfMonth, endOfMonth } from "date-fns";
 
 export default function EducationReports() {
-  const { isAdmin } = useAuth();
+  const { isAdmin, madrasaName } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingReport, setEditingReport] = useState<EducationReport | undefined>();
@@ -119,6 +119,7 @@ export default function EducationReports() {
         classes,
         teachers,
         dateFilter,
+        madrasaName: madrasaName || "Madrasa",
       });
       toast.success("PDF exported successfully! / پی ڈی ایف کامیابی سے ایکسپورٹ ہوگئی");
     } catch (error) {
