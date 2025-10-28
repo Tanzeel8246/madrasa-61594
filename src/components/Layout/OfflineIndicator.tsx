@@ -2,9 +2,11 @@ import { useOfflineSync } from '@/hooks/useOfflineSync';
 import { Cloud, CloudOff, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 export function OfflineIndicator() {
   const { isOnline, isSyncing, pendingChanges, syncNow } = useOfflineSync();
+  const { t } = useTranslation();
 
   return (
     <div className={cn(
@@ -20,13 +22,13 @@ export function OfflineIndicator() {
       )}
       
       <span className="font-medium">
-        {isOnline ? 'آن لائن' : 'آف لائن'}
+        {isOnline ? t('online') : t('offline')}
       </span>
 
       {pendingChanges > 0 && (
         <>
           <span className="text-xs">
-            ({pendingChanges} تبدیلیاں منتظر)
+            ({pendingChanges} {t('pendingChanges')})
           </span>
           {isOnline && (
             <Button

@@ -18,13 +18,13 @@ export function useOfflineSync() {
   useEffect(() => {
     const handleOnline = () => {
       setIsOnline(true);
-      toast.success('آن لائن ہو گئے! ڈیٹا sync ہو رہا ہے...');
+      toast.success('Online! Syncing data...');
       syncOfflineData();
     };
 
     const handleOffline = () => {
       setIsOnline(false);
-      toast.warning('آف لائن ہو گئے! تبدیلیاں محفوظ ہو رہی ہیں');
+      toast.warning('Offline! Changes will be saved locally');
     };
 
     window.addEventListener('online', handleOnline);
@@ -89,10 +89,10 @@ export function useOfflineSync() {
       await refreshDataFromServer();
 
       setPendingChanges(0);
-      toast.success('تمام تبدیلیاں sync ہو گئیں');
+      toast.success('All changes synced successfully');
     } catch (error) {
       console.error('Sync failed:', error);
-      toast.error('Sync میں مسئلہ');
+      toast.error('Sync error');
     } finally {
       setIsSyncing(false);
     }
@@ -122,7 +122,7 @@ export function useOfflineSync() {
     if (navigator.onLine) {
       await syncOfflineData();
     } else {
-      toast.error('آف لائن ہیں! sync نہیں ہو سکتا');
+      toast.error('Offline! Cannot sync');
     }
   };
 

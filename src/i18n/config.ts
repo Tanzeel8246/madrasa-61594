@@ -151,6 +151,8 @@ const resources = {
       
       // Auth page
       schoolManagementSystem: 'School Management System',
+      login: 'Login',
+      signup: 'Sign Up',
       loginOrSignup: 'Login to your account or create a new one',
       continueWithGoogle: 'Continue with Google',
       orWithEmail: 'Or with email',
@@ -166,10 +168,11 @@ const resources = {
       selectRole: 'Select Role',
       sendRequest: 'Send Request',
       joinRequestNote: 'Your request will be sent to the admin. You will receive an email after approval',
-      fillAllFields: 'Fill all fields',
+      fillAllFields: 'Please fill all fields',
       joinRequestSuccess: 'Request submitted! Wait for admin approval',
       joinRequestError: 'Error submitting request',
       creatingAccount: 'Creating account...',
+      user: 'User',
       
       // Messages
       success: 'Success',
@@ -337,6 +340,8 @@ const resources = {
       
       // Auth page
       schoolManagementSystem: 'اسکول مینجمنٹ سسٹم',
+      login: 'لاگ ان',
+      signup: 'سائن اپ',
       loginOrSignup: 'اپنے اکاؤنٹ میں داخل ہوں یا نیا اکاؤنٹ بنائیں',
       continueWithGoogle: 'گوگل کے ساتھ جاری رکھیں',
       orWithEmail: 'یا ای میل کے ساتھ',
@@ -356,6 +361,7 @@ const resources = {
       joinRequestSuccess: 'درخواست جمع کرا دی گئی! ایڈمن کی منظوری کا انتظار کریں',
       joinRequestError: 'درخواست جمع کرانے میں خرابی',
       creatingAccount: 'اکاؤنٹ بن رہا ہے...',
+      user: 'صارف',
       
       // Messages
       success: 'کامیابی',
