@@ -65,25 +65,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const checkAdminRole = async (userId: string) => {
     try {
+      console.log('Checking admin role for user:', userId);
+      
       const { data, error } = await supabase
         .from('user_roles')
         .select('role')
         .eq('user_id', userId)
-        .eq('role', 'admin')
         .maybeSingle();
       
-      if (!error && data) {
+      console.log('User roles query result:', { data, error });
+      
+      if (error) {
+        console.error('Error fetching user role:', error);
+        setIsAdmin(false);
+      } else if (data && data.role === 'admin') {
+        console.log('User is admin!');
         setIsAdmin(true);
       } else {
+        console.log('User is not admin');
         setIsAdmin(false);
       }
 
       // Fetch madrasa name and logo from profile
-      const { data: profileData } = await supabase
+      const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .select('madrasa_name, logo_url')
         .eq('id', userId)
         .maybeSingle();
+      
+      console.log('Profile data:', { profileData, profileError });
       
       if (profileData?.madrasa_name) {
         setMadrasaName(profileData.madrasa_name);
@@ -92,6 +102,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setLogoUrl(profileData.logo_url);
       }
     } catch (error) {
+      console.error('Exception in checkAdminRole:', error);
       setIsAdmin(false);
     }
   };
