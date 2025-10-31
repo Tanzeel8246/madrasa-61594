@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { BookOpen, Users, GraduationCap, ClipboardCheck, LayoutDashboard, BookMarked, FileText, DollarSign, Shield, X } from "lucide-react";
+import { BookOpen, Users, GraduationCap, ClipboardCheck, LayoutDashboard, BookMarked, FileText, DollarSign, Shield, X, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
@@ -117,13 +117,17 @@ export default function Sidebar() {
         </div>
       </aside>
 
-      {/* Mobile menu button - exported for Header to use */}
+      {/* Mobile menu button - visible at bottom right */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="md:hidden fixed bottom-4 right-4 z-50 p-3 bg-sidebar-primary text-sidebar-primary-foreground rounded-full shadow-elevated"
+        className="md:hidden fixed bottom-6 right-6 z-50 p-4 bg-primary text-primary-foreground rounded-full shadow-lg hover:shadow-xl transition-all duration-300 active:scale-95"
         aria-label="Toggle menu"
       >
-        <BookOpen className="h-6 w-6" />
+        {isOpen ? (
+          <X className="h-6 w-6" />
+        ) : (
+          <Menu className="h-6 w-6" />
+        )}
       </button>
     </>
   );
