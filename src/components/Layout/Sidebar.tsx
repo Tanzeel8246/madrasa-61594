@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { BookOpen, Users, GraduationCap, ClipboardCheck, LayoutDashboard, BookMarked, FileText, DollarSign, Shield, X, Menu } from "lucide-react";
+import { BookOpen, Users, GraduationCap, ClipboardCheck, LayoutDashboard, BookMarked, FileText, DollarSign, Shield, X, Menu, BarChart3 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
@@ -20,6 +20,7 @@ export default function Sidebar() {
     { name: t('courses'), href: "/courses", icon: BookMarked },
     { name: t('learningReport'), href: "/education-reports", icon: FileText },
     { name: t('fees'), href: "/fees", icon: DollarSign },
+    { name: t('reports.menu'), href: "/reports", icon: BarChart3 },
     ...(isAdmin ? [{ name: t('userRoles'), href: "/user-roles", icon: Shield }] : []),
   ];
 

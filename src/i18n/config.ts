@@ -231,6 +231,13 @@ const resources = {
       onlineSyncing: 'Online! Syncing data...',
       syncComplete: 'All changes synced',
       syncError: 'Sync error',
+      
+      // Reports
+      reports: {
+        menu: 'Reports',
+        title: 'Reports & Analytics',
+        subtitle: 'Generate comprehensive PDF reports with advanced filtering',
+      },
     }
   },
   ur: {
@@ -462,6 +469,13 @@ const resources = {
       onlineSyncing: 'آن لائن ہو گئے! ڈیٹا sync ہو رہا ہے...',
       syncComplete: 'تمام تبدیلیاں sync ہو گئیں',
       syncError: 'Sync میں مسئلہ',
+      
+      // Reports
+      reports: {
+        menu: 'رپورٹس',
+        title: 'رپورٹس اور تجزیات',
+        subtitle: 'جدید فلٹرنگ کے ساتھ جامع پی ڈی ایف رپورٹس بنائیں',
+      },
     }
   }
 };
