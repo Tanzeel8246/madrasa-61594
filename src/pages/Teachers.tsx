@@ -8,9 +8,11 @@ import { useTeachers, Teacher } from "@/hooks/useTeachers";
 import { TeacherDialog } from "@/components/Teachers/TeacherDialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTranslation } from "react-i18next";
 
 export default function Teachers() {
   const { isAdmin } = useAuth();
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingTeacher, setEditingTeacher] = useState<Teacher | undefined>();
@@ -58,12 +60,12 @@ export default function Teachers() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground">Teachers</h1>
-          <p className="text-muted-foreground mt-1 text-sm md:text-base">Manage your madrasa instructors</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground">{t('teachers')}</h1>
+          <p className="text-muted-foreground mt-1 text-sm md:text-base">{t('manageTeachers')}</p>
         </div>
         <Button className="gap-2 w-full sm:w-auto" onClick={handleAddClick} disabled={!isAdmin}>
           <Plus className="h-4 w-4" />
-          Add Teacher
+          {t('addTeacher')}
         </Button>
       </div>
 
@@ -75,15 +77,14 @@ export default function Teachers() {
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 type="search"
-                placeholder="Search teachers..."
+                placeholder={t('searchTeachers')}
                 className="pl-10 bg-muted/50"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
             <div className="flex gap-2">
-              <Button variant="outline">Filter</Button>
-              <Button variant="outline">Export</Button>
+              <Button variant="outline">{t('filter')}</Button>
             </div>
           </div>
         </CardContent>
@@ -92,7 +93,11 @@ export default function Teachers() {
       {/* Teachers Grid */}
       {isLoading ? (
         <div className="text-center py-12">
-          <p className="text-muted-foreground">Loading teachers...</p>
+          <p className="text-muted-foreground">{t('loading')}</p>
+        </div>
+      ) : filteredTeachers.length === 0 ? (
+        <div className="col-span-full text-center py-12">
+          <p className="text-muted-foreground">{t('noTeachersFound')}</p>
         </div>
       ) : (
         <div className="grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-2">
@@ -116,11 +121,11 @@ export default function Teachers() {
                 {/* Stats */}
                 <div className="grid grid-cols-2 gap-4 rounded-lg bg-muted/50 p-4">
                   <div className="space-y-1">
-                    <p className="text-sm text-muted-foreground">Classes</p>
+                    <p className="text-sm text-muted-foreground">{t('classes')}</p>
                     <p className="text-2xl font-bold text-foreground">{teacher.classes_count}</p>
                   </div>
                   <div className="space-y-1">
-                    <p className="text-sm text-muted-foreground">Students</p>
+                    <p className="text-sm text-muted-foreground">{t('students')}</p>
                     <p className="text-2xl font-bold text-foreground">{teacher.students_count}</p>
                   </div>
                 </div>
@@ -136,11 +141,11 @@ export default function Teachers() {
                   <div className="flex gap-2">
                     <Button size="sm" variant="outline" onClick={() => handleEditClick(teacher)}>
                       <Edit className="h-4 w-4 mr-1" />
-                      Edit
+                      {t('edit')}
                     </Button>
                     <Button size="sm" variant="destructive" onClick={() => handleDeleteClick(teacher.id)}>
                       <Trash2 className="h-4 w-4 mr-1" />
-                      Delete
+                      {t('delete')}
                     </Button>
                   </div>
                 )}
@@ -161,14 +166,14 @@ export default function Teachers() {
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>{t('confirmDelete')}</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the teacher record.
+              {t('deleteTeacherWarning')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteConfirm}>Delete</AlertDialogAction>
+            <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteConfirm}>{t('delete')}</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

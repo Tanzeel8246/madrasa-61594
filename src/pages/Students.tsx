@@ -79,12 +79,12 @@ export default function Students() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground">Students</h1>
-          <p className="text-muted-foreground mt-1 text-sm md:text-base">Manage your madrasa students</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground">{t('students')}</h1>
+          <p className="text-muted-foreground mt-1 text-sm md:text-base">{t('manageStudents')}</p>
         </div>
         <Button className="gap-2 w-full sm:w-auto" onClick={handleAddClick} disabled={!isAdmin}>
           <Plus className="h-4 w-4" />
-          Add Student
+          {t('addStudent')}
         </Button>
       </div>
 
@@ -96,7 +96,7 @@ export default function Students() {
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 type="search"
-                placeholder="Search students..."
+                placeholder={t('searchStudents')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10 bg-muted/50"
@@ -115,7 +115,7 @@ export default function Students() {
       {/* Students Grid */}
       {isLoading ? (
         <div className="text-center py-12">
-          <p className="text-muted-foreground">Loading students...</p>
+          <p className="text-muted-foreground">{t('loading')}</p>
         </div>
       ) : (
         <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -131,7 +131,7 @@ export default function Students() {
                       </div>
                       <div className="flex-1">
                         <h3 className="font-semibold text-lg text-foreground">{student.name}</h3>
-                        <p className="text-sm text-muted-foreground">{student.grade || "No grade"}</p>
+                        <p className="text-sm text-muted-foreground">{student.grade || t('noData')}</p>
                       </div>
                       <Badge variant={student.status === "active" ? "default" : "secondary"}>
                         {student.status}
@@ -157,11 +157,11 @@ export default function Students() {
                       <div className="flex gap-2">
                         <Button size="sm" variant="outline" className="flex-1" onClick={() => handleEditClick(student)}>
                           <Edit className="h-4 w-4 mr-1" />
-                          <span className="hidden sm:inline">Edit</span>
+                          <span className="hidden sm:inline">{t('edit')}</span>
                         </Button>
                         <Button size="sm" variant="destructive" className="flex-1" onClick={() => handleDeleteClick(student.id)}>
                           <Trash2 className="h-4 w-4 mr-1" />
-                          <span className="hidden sm:inline">Delete</span>
+                          <span className="hidden sm:inline">{t('delete')}</span>
                         </Button>
                       </div>
                     )}
@@ -171,7 +171,7 @@ export default function Students() {
             ))
           ) : (
             <div className="col-span-full text-center py-12">
-              <p className="text-muted-foreground">No students found matching your search.</p>
+              <p className="text-muted-foreground">{t('noStudentsFound')}</p>
             </div>
           )}
         </div>

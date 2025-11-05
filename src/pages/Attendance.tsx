@@ -9,6 +9,7 @@ import { useStudents } from "@/hooks/useStudents";
 import { useClasses } from "@/hooks/useClasses";
 import { AttendanceDialog } from "@/components/Attendance/AttendanceDialog";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTranslation } from "react-i18next";
 
 const getStatusColor = (status: string) => {
   switch (status) {
@@ -41,6 +42,7 @@ const getStatusIcon = (status: string) => {
 };
 
 export default function Attendance() {
+  const { t } = useTranslation();
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [dialogOpen, setDialogOpen] = useState(false);
   const { isAdmin } = useAuth();
@@ -51,15 +53,15 @@ export default function Attendance() {
   const { classes } = useClasses();
 
   const getStudentName = (studentId?: string) => {
-    if (!studentId) return "N/A";
+    if (!studentId) return t('noData');
     const student = students.find(s => s.id === studentId);
-    return student?.name || "Unknown";
+    return student?.name || t('unknown');
   };
 
   const getClassName = (classId?: string) => {
-    if (!classId) return "No Class";
+    if (!classId) return t('noClass');
     const cls = classes.find(c => c.id === classId);
-    return cls?.name || "Unknown";
+    return cls?.name || t('unknown');
   };
 
   const handleSave = (attendanceData: any) => {
@@ -84,7 +86,7 @@ export default function Attendance() {
           {isAdmin && (
             <Button onClick={() => setDialogOpen(true)} className="w-full sm:w-auto">
               <CalendarIcon className="mr-2 h-4 w-4" />
-              Mark Attendance
+              {t('markAttendance')}
             </Button>
           )}
         </div>
@@ -92,7 +94,7 @@ export default function Attendance() {
         <div className="grid gap-6 lg:grid-cols-3 xl:grid-cols-[2fr_1fr]">
           <Card className="order-2 lg:order-1">
             <CardHeader>
-              <CardTitle className="text-lg md:text-xl">Attendance Records</CardTitle>
+              <CardTitle className="text-lg md:text-xl">{t('attendanceRecords')}</CardTitle>
               <CardDescription>
                 {date?.toLocaleDateString("en-US", {
                   weekday: "long",
@@ -104,9 +106,9 @@ export default function Attendance() {
             </CardHeader>
             <CardContent>
               {isLoading ? (
-                <p className="text-center text-muted-foreground py-8">Loading attendance...</p>
+                <p className="text-center text-muted-foreground py-8">{t('loading')}</p>
               ) : attendance.length === 0 ? (
-                <p className="text-center text-muted-foreground py-8">No attendance records for this date</p>
+                <p className="text-center text-muted-foreground py-8">{t('noAttendanceRecords')}</p>
               ) : (
                 <div className="space-y-4">
                   {attendance.map((record) => (
@@ -138,8 +140,8 @@ export default function Attendance() {
 
           <Card className="order-1 lg:order-2">
             <CardHeader>
-              <CardTitle className="text-lg md:text-xl">Select Date</CardTitle>
-              <CardDescription className="text-sm">View attendance for a specific date</CardDescription>
+              <CardTitle className="text-lg md:text-xl">{t('selectDate')}</CardTitle>
+              <CardDescription className="text-sm">{t('selectDateDesc')}</CardDescription>
             </CardHeader>
             <CardContent>
               <Calendar
@@ -152,28 +154,28 @@ export default function Attendance() {
                 <div className="flex items-center justify-between text-sm">
                   <span className="flex items-center gap-2">
                     <div className="h-3 w-3 rounded-full bg-green-500" />
-                    Present
+                    {t('present')}
                   </span>
                   <span className="font-medium">{statusCounts.present}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="flex items-center gap-2">
                     <div className="h-3 w-3 rounded-full bg-red-500" />
-                    Absent
+                    {t('absent')}
                   </span>
                   <span className="font-medium">{statusCounts.absent}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="flex items-center gap-2">
                     <div className="h-3 w-3 rounded-full bg-yellow-500" />
-                    Late
+                    {t('late')}
                   </span>
                   <span className="font-medium">{statusCounts.late}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="flex items-center gap-2">
                     <div className="h-3 w-3 rounded-full bg-blue-500" />
-                    Excused
+                    {t('excused')}
                   </span>
                   <span className="font-medium">{statusCounts.excused}</span>
                 </div>
