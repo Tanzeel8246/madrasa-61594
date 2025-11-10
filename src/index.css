@@ -53,6 +53,13 @@ All colors MUST be HSL.
     --shadow-soft: 0 2px 8px -2px hsl(170, 30%, 15% / 0.1);
     --shadow-elevated: 0 8px 24px -4px hsl(170, 30%, 15% / 0.15);
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Chart colors */
+    --chart-1: 142 76% 36%;
+    --chart-2: 346 77% 50%;
+    --chart-3: 262 83% 58%;
+    --chart-4: 221 83% 53%;
+    --chart-5: 47 96% 53%;
   }
 
   .dark {

@@ -274,6 +274,18 @@ const resources = {
         balance: 'Balance',
         deleteConfirmTitle: 'Delete Transaction',
         deleteConfirmDescription: 'Are you sure you want to delete this transaction? This action cannot be undone.',
+        analytics: {
+          title: 'Analytics',
+          trends: 'Income vs Expense Trends',
+          trendsDescription: 'Financial performance over the last 6 months',
+          monthlyComparison: 'Monthly Comparison',
+          monthlyComparisonDescription: 'Compare current month with previous month',
+          incomeByCategory: 'Income by Category',
+          expenseByCategory: 'Expense by Category',
+          categoryBreakdown: 'Distribution of funds by category',
+          net: 'Net Balance',
+          noData: 'No data available',
+        },
       },
     }
   },
@@ -549,6 +561,18 @@ const resources = {
         balance: 'بیلنس',
         deleteConfirmTitle: 'لین دین حذف کریں',
         deleteConfirmDescription: 'کیا آپ واقعی اس لین دین کو حذف کرنا چاہتے ہیں؟ یہ عمل واپس نہیں کیا جا سکتا۔',
+        analytics: {
+          title: 'تجزیات',
+          trends: 'آمدن بمقابلہ خرچ کا رجحان',
+          trendsDescription: 'گزشتہ 6 ماہ کی مالیاتی کارکردگی',
+          monthlyComparison: 'ماہانہ موازنہ',
+          monthlyComparisonDescription: 'موجودہ ماہ کا گزشتہ ماہ سے موازنہ',
+          incomeByCategory: 'زمرے کے لحاظ سے آمدن',
+          expenseByCategory: 'زمرے کے لحاظ سے خرچ',
+          categoryBreakdown: 'زمرے کے لحاظ سے فنڈز کی تقسیم',
+          net: 'خالص بیلنس',
+          noData: 'کوئی ڈیٹا دستیاب نہیں',
+        },
       },
     }
   }

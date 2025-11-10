@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Plus, Edit, Trash2, TrendingUp, TrendingDown, Wallet } from "lucide-react";
+import { Plus, Edit, Trash2, TrendingUp, TrendingDown, Wallet, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { ExpenseDialog } from "@/components/Expenses/ExpenseDialog";
+import { FinancialAnalytics } from "@/components/Expenses/FinancialAnalytics";
 import { useExpenses, type Expense } from "@/hooks/useExpenses";
 import { useAuth } from "@/contexts/AuthContext";
 import StatsCard from "@/components/Dashboard/StatsCard";
@@ -96,7 +98,19 @@ const Expenses = () => {
         />
       </div>
 
-      <Card>
+      <Tabs defaultValue="transactions" className="w-full">
+        <TabsList className="grid w-full max-w-md grid-cols-2">
+          <TabsTrigger value="transactions">
+            {t("expenses.transactions")}
+          </TabsTrigger>
+          <TabsTrigger value="analytics">
+            <BarChart3 className="h-4 w-4 mr-2" />
+            {t("expenses.analytics.title")}
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="transactions" className="mt-6">
+          <Card>
         <CardHeader>
           <CardTitle>{t("expenses.transactions")}</CardTitle>
         </CardHeader>
@@ -175,6 +189,12 @@ const Expenses = () => {
           )}
         </CardContent>
       </Card>
+        </TabsContent>
+
+        <TabsContent value="analytics" className="mt-6">
+          <FinancialAnalytics />
+        </TabsContent>
+      </Tabs>
 
       <ExpenseDialog
         open={dialogOpen}
