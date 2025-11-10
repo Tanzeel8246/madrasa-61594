@@ -274,6 +274,7 @@ const resources = {
         balance: 'Balance',
         deleteConfirmTitle: 'Delete Transaction',
         deleteConfirmDescription: 'Are you sure you want to delete this transaction? This action cannot be undone.',
+        selectCategory: 'Select Category',
         analytics: {
           title: 'Analytics',
           trends: 'Income vs Expense Trends',
@@ -285,6 +286,27 @@ const resources = {
           categoryBreakdown: 'Distribution of funds by category',
           net: 'Net Balance',
           noData: 'No data available',
+        },
+        budget: {
+          title: 'Budget Tracking',
+          description: 'Set and monitor monthly budgets per category',
+          set: 'Set Budget',
+          edit: 'Edit Budget',
+          amount: 'Budget Amount',
+          month: 'Month',
+          year: 'Year',
+          spent: 'Spent',
+          budgetAmount: 'Budget',
+          noBudgets: 'No budgets set for current month',
+          alertExceeded: 'Budget exceeded for categories',
+          alertWarning: 'Approaching budget limit for categories',
+          status: {
+            onTrack: 'On Track',
+            warning: 'Warning',
+            exceeded: 'Exceeded'
+          },
+          deleteConfirmTitle: 'Delete Budget',
+          deleteConfirmDescription: 'Are you sure you want to delete this budget? This action cannot be undone.'
         },
       },
     }
@@ -561,6 +583,7 @@ const resources = {
         balance: 'بیلنس',
         deleteConfirmTitle: 'لین دین حذف کریں',
         deleteConfirmDescription: 'کیا آپ واقعی اس لین دین کو حذف کرنا چاہتے ہیں؟ یہ عمل واپس نہیں کیا جا سکتا۔',
+        selectCategory: 'زمرہ منتخب کریں',
         analytics: {
           title: 'تجزیات',
           trends: 'آمدن بمقابلہ خرچ کا رجحان',
@@ -572,6 +595,27 @@ const resources = {
           categoryBreakdown: 'زمرے کے لحاظ سے فنڈز کی تقسیم',
           net: 'خالص بیلنس',
           noData: 'کوئی ڈیٹا دستیاب نہیں',
+        },
+        budget: {
+          title: 'بجٹ ٹریکنگ',
+          description: 'زمرہ کے لحاظ سے ماہانہ بجٹ مقرر اور نگرانی کریں',
+          set: 'بجٹ مقرر کریں',
+          edit: 'بجٹ میں ترمیم کریں',
+          amount: 'بجٹ کی رقم',
+          month: 'مہینہ',
+          year: 'سال',
+          spent: 'خرچ شدہ',
+          budgetAmount: 'بجٹ',
+          noBudgets: 'موجودہ ماہ کے لیے کوئی بجٹ مقرر نہیں',
+          alertExceeded: 'زمروں کے لیے بجٹ سے تجاوز',
+          alertWarning: 'زمروں کے لیے بجٹ کی حد کے قریب',
+          status: {
+            onTrack: 'ٹھیک چل رہا ہے',
+            warning: 'انتباہ',
+            exceeded: 'تجاوز شدہ'
+          },
+          deleteConfirmTitle: 'بجٹ حذف کریں',
+          deleteConfirmDescription: 'کیا آپ واقعی اس بجٹ کو حذف کرنا چاہتے ہیں؟ یہ عمل واپس نہیں کیا جا سکتا۔'
         },
       },
     }

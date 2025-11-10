@@ -10,6 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { ExpenseDialog } from "@/components/Expenses/ExpenseDialog";
 import { FinancialAnalytics } from "@/components/Expenses/FinancialAnalytics";
+import { BudgetTracking } from "@/components/Expenses/BudgetTracking";
 import { useExpenses, type Expense } from "@/hooks/useExpenses";
 import { useAuth } from "@/contexts/AuthContext";
 import StatsCard from "@/components/Dashboard/StatsCard";
@@ -99,13 +100,17 @@ const Expenses = () => {
       </div>
 
       <Tabs defaultValue="transactions" className="w-full">
-        <TabsList className="grid w-full max-w-md grid-cols-2">
+        <TabsList className="grid w-full max-w-2xl grid-cols-3">
           <TabsTrigger value="transactions">
             {t("expenses.transactions")}
           </TabsTrigger>
           <TabsTrigger value="analytics">
             <BarChart3 className="h-4 w-4 mr-2" />
             {t("expenses.analytics.title")}
+          </TabsTrigger>
+          <TabsTrigger value="budget">
+            <Wallet className="h-4 w-4 mr-2" />
+            {t("expenses.budget.title")}
           </TabsTrigger>
         </TabsList>
 
@@ -193,6 +198,10 @@ const Expenses = () => {
 
         <TabsContent value="analytics" className="mt-6">
           <FinancialAnalytics />
+        </TabsContent>
+
+        <TabsContent value="budget" className="mt-6">
+          <BudgetTracking />
         </TabsContent>
       </Tabs>
 

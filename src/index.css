@@ -60,6 +60,12 @@ All colors MUST be HSL.
     --chart-3: 262 83% 58%;
     --chart-4: 221 83% 53%;
     --chart-5: 47 96% 53%;
+
+    /* Status colors */
+    --success: 142 76% 36%;
+    --success-foreground: 138 76% 97%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 48 96% 89%;
   }
 
   .dark {

@@ -65,6 +65,42 @@ export type Database = {
           },
         ]
       }
+      budgets: {
+        Row: {
+          amount: number
+          category: string
+          created_at: string
+          created_by: string | null
+          id: string
+          madrasa_name: string | null
+          month: number
+          updated_at: string
+          year: number
+        }
+        Insert: {
+          amount: number
+          category: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          madrasa_name?: string | null
+          month: number
+          updated_at?: string
+          year: number
+        }
+        Update: {
+          amount?: number
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          madrasa_name?: string | null
+          month?: number
+          updated_at?: string
+          year?: number
+        }
+        Relationships: []
+      }
       classes: {
         Row: {
           created_at: string
